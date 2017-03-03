@@ -7,11 +7,8 @@ SELECT "Recreating facility activity etl table";
 CREATE TABLE facility_activity_report (
   zeir_id INT(11) not null primary key,
   patient_id INT(11),
+  gender VARCHAR(50),
   location_name VARCHAR(255),
-  facility_id INT(11),
-  facility_name VARCHAR(255),
-  outreach_area_id INT(11),
-  outreach_area_name VARCHAR(255),
   activity_date DATE,
   child_register_card_no VARCHAR(255),
   lt_12_months_male INT(11),
