@@ -20,22 +20,28 @@ r.encounter_id,
 r.zeir_id,
 r.patient_id,
 r.gender,
+r.birthdate,
 r.location_name,
 r.activity_date,
 r.child_register_card_no,
 r.lt_12_months_male,
-r.lt_12_months_female
+r.lt_12_months_female,
+r.btwn_12_59_months_male,
+r.btwn_12_59_months_female
 from
 (select
   e.encounter_id,
   pi.identifier as zeir_id,
   e.patient_id,
   p.gender,
+  p.birthdate,
   max(if (o.concept_id = '163531',o.value_text,null)) as location_name,
   max(if (o.concept_id = '163138',o.value_datetime,null)) as activity_date,
   pa.value as child_register_card_no,
-  if(p.gender = 'Male',1, if(p.gender = 'MALE', 1, if(p.gender = 'M', 1, if(p.gender = '1', 1, null)))) as lt_12_months_male,
-  if(p.gender = 'female',1, if(p.gender = 'FEMALE', 1, if(p.gender = 'F', 1, if(p.gender = '2', 1, null)))) as lt_12_months_female
+  if((gender = 'Male' or gender = 'M' or gender = '1') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 12,1, null) as lt_12_months_male,
+  if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 12,1, null) as lt_12_months_female,
+  if((gender = 'Male' or gender = 'M' or gender = '1') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_male,
+if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_female
  from encounter e
   join encounter_type et on e.encounter_type = et.encounter_type_id
   inner join person p on p.person_id = e.patient_id
@@ -45,10 +51,7 @@ from
  where e.encounter_type = 29
   and pi.identifier_type = 17
   and pa.person_attribute_type_id = 20
-  and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) < 12
  group by pi.identifier) r;
-
--- Populate lt_12_months indicators
 
 END$$
 DELIMITER;
