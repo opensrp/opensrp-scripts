@@ -13,7 +13,10 @@ INSERT INTO facility_activity_report(
   activity_date,
   child_register_card_no,
   lt_12_months_male,
-  lt_12_months_female
+  lt_12_months_female,
+  btwn_12_59_months_male,
+  btwn_12_59_months_female,
+  from_outside_catchment_area
 )
 select
 r.encounter_id,
@@ -27,7 +30,8 @@ r.child_register_card_no,
 r.lt_12_months_male,
 r.lt_12_months_female,
 r.btwn_12_59_months_male,
-r.btwn_12_59_months_female
+r.btwn_12_59_months_female,
+r.from_outside_catchment_area
 from
 (select
   e.encounter_id,
@@ -37,6 +41,7 @@ from
   p.birthdate,
   max(if (o.concept_id = '163531',o.value_text,null)) as location_name,
   max(if (o.concept_id = '163138',o.value_datetime,null)) as activity_date,
+  max(if (o.concept_id = '160636',o.value_boolean,null)) as from_outside_catchment_area,
   pa.value as child_register_card_no,
   if((gender = 'Male' or gender = 'M' or gender = '1') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 12,1, null) as lt_12_months_male,
   if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 12,1, null) as lt_12_months_female,
