@@ -18,3 +18,6 @@ Customised OpenMRS ETL for Report Requirements for Path Zambia Project
 
 ### Person Attribute Type Constants Dictionary
 -   Child Register Card Number ID: `20`
+
+### Notes
+- There is a high probability that the encounter date may be different from the vaccination date in the case where the vaccination date has time values. This has the potential of breaking the update vaccine data sql script

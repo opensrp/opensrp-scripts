@@ -5,11 +5,13 @@ DROP TABLE if exists openmrs.facility_activity_report;
 SELECT "Recreating facility activity etl table";
 
 CREATE TABLE facility_activity_report (
-  zeir_id INT(11) not null primary key,
+  encounter_id INT(11) not null primary key,
+  zeir_id VARCHAR(50),
   patient_id INT(11),
   gender VARCHAR(50),
+  birthdate DATE,
   location_name VARCHAR(255),
-  activity_date DATE,
+  encounter_date DATE,
   child_register_card_no VARCHAR(255),
   lt_12_months_male INT(11),
   lt_12_months_female INT(11),
