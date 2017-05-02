@@ -8,9 +8,9 @@ Customised OpenMRS ETL for Report Requirements for Path Zambia Project
 - Lives outside of catchment area Concept ID: `160636`
 
 ### Encounter Types Constants Dictionary
-- Birth Registration encounter type ID `29`
-- Growth Monitoring encounter type  ID: `21`
-- Vaccination encounter type ID: `31`
+- Birth Registration encounter type ID `1`
+- Growth Monitoring encounter type  ID: `2`
+- Vaccination encounter type ID: `4`
 
 ### Patient Identifier's Constants Dictionary
 - ZEIR ID: `17`
