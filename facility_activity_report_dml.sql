@@ -11,6 +11,7 @@ INSERT INTO facility_activity_report(
   patient_id,
   gender,
   birthdate,
+  location_id,
   location_name,
   encounter_date,
   child_register_card_no,
@@ -18,6 +19,8 @@ INSERT INTO facility_activity_report(
   lt_12_months_female,
   btwn_12_59_months_male,
   btwn_12_59_months_female,
+  0_23_months_weighed,
+  24_59_months_weighed,
   from_outside_catchment_area
 )
 select
@@ -26,6 +29,7 @@ r.zeir_id,
 r.patient_id,
 r.gender,
 r.birthdate,
+r.location_id,
 r.location_name,
 r.encounter_date,
 r.child_register_card_no,
@@ -33,6 +37,8 @@ r.lt_12_months_male,
 r.lt_12_months_female,
 r.btwn_12_59_months_male,
 r.btwn_12_59_months_female,
+r.0_23_months_weighed,
+r.24_59_months_weighed,
 r.from_outside_catchment_area
 from
 (select
@@ -41,24 +47,104 @@ from
   e.patient_id,
   p.gender,
   p.birthdate,
-  max(if (o.concept_id = '163531',o.value_text,null)) as location_name,
-  max(if (o.concept_id = '163138',o.obs_datetime,null)) as encounter_date,
+  e.location_id,
+  l.name as location_name,
+  e.encounter_datetime as encounter_date,
   max(if (o.concept_id = '160636',o.value_boolean,null)) as from_outside_catchment_area,
   pa.value as child_register_card_no,
   if((gender = 'Male' or gender = 'M' or gender = '1') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 12,1, null) as lt_12_months_male,
   if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 12,1, null) as lt_12_months_female,
   if((gender = 'Male' or gender = 'M' or gender = '1') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_male,
-if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_female
+  if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_female,
+  if((o.concept_id = '5089' and o.value_numeric is not null) and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 23,1, null) as 0_23_months_weighed,
+  if((o.concept_id = '5089' and o.value_numeric is not null) and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 23 and 59,1, null) as 24_59_months_weighed
  from encounter e
   inner join person p on p.person_id = e.patient_id
   inner join person_attribute pa on pa.person_id = e.patient_id
   inner join patient_identifier pi on e.patient_id = pi.patient_id
   inner join obs o on o.encounter_id = e.encounter_id
- where e.encounter_type in (29, 31)
+  inner join location l on e.location_id = l.location_id
+ where e.encounter_type = 1
   and pi.identifier_type = 17
   and pa.person_attribute_type_id = 20
   and e.voided = 0
- group by e.encounter_id) r;
+ group by e.encounter_id
+ order by patient_id) r;
+
+-- Birth Registration encounter type ID `1`
+-- Vaccination encounter type ID: `4`
+-- ZEIR ID: `17`
+-- M_ZEIR ID: `18`
+-- Child Register Card Number ID: `20`
+
+-- Add vaccination records for patients that took place on different date
+INSERT INTO facility_activity_report(
+  encounter_id,
+  zeir_id,
+  patient_id,
+  gender,
+  birthdate,
+  location_id,
+  location_name,
+  encounter_date,
+  child_register_card_no,
+  lt_12_months_male,
+  lt_12_months_female,
+  btwn_12_59_months_male,
+  btwn_12_59_months_female,
+  0_23_months_weighed,
+  24_59_months_weighed,
+  from_outside_catchment_area
+)
+select
+r.encounter_id,
+r.zeir_id,
+r.patient_id,
+r.gender,
+r.birthdate,
+r.location_id,
+r.location_name,
+r.encounter_date,
+r.child_register_card_no,
+r.lt_12_months_male,
+r.lt_12_months_female,
+r.btwn_12_59_months_male,
+r.btwn_12_59_months_female,
+r.0_23_months_weighed,
+r.24_59_months_weighed,
+r.from_outside_catchment_area
+from
+(select
+  e.encounter_id,
+  pi.identifier as zeir_id,
+  e.patient_id,
+  p.gender,
+  p.birthdate,
+  e.location_id,
+  l.name as location_name,
+  e.encounter_datetime as encounter_date,
+  max(if (o.concept_id = '160636',o.value_boolean,null)) as from_outside_catchment_area,
+  pa.value as child_register_card_no,
+  if((p.gender = 'Male' or p.gender = 'M' or p.gender = '1') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) < 12,1, null) as lt_12_months_male,
+  if((p.gender = 'female' or p.gender = 'F' or p.gender = '2') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) < 12,1, null) as lt_12_months_female,
+  if((p.gender = 'Male' or p.gender = 'M' or p.gender = '1') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_male,
+  if((p.gender = 'female' or p.gender = 'F' or p.gender = '2') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_female,
+  if((o.concept_id = '5089' and o.value_numeric is not null) and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) < 23,1, null) as 0_23_months_weighed,
+  if((o.concept_id = '5089' and o.value_numeric is not null) and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) between 23 and 59,1, null) as 24_59_months_weighed
+ from encounter e
+  inner join person p on p.person_id = e.patient_id
+  inner join person_attribute pa on pa.person_id = e.patient_id
+  inner join patient_identifier pi on e.patient_id = pi.patient_id
+  inner join obs o on o.encounter_id = e.encounter_id
+  inner join location l on e.location_id = l.location_id
+  right join facility_activity_report far on e.patient_id = far.patient_id
+ where e.encounter_type = 4
+  and pi.identifier_type = 17
+  and pa.person_attribute_type_id = 20
+  and e.encounter_datetime != far.encounter_date
+  and e.voided = 0
+ group by e.patient_id
+ order by patient_id) r;
 
 -- Update existing records with BCG vaccination data
 
@@ -74,10 +160,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
+  where e.encounter_type = 4 and e.voided = 0) as t
   where t.vaccination_date is not null
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.bcg_dose_lt_1yr = vdb.bcg_dose_lt_1yr;
 
@@ -95,10 +182,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '783' and vaccination_sequence = '0'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.opv_dose_0 = vdb.opv_dose_0;
 
@@ -116,10 +204,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '783' and vaccination_sequence = '1'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.opv_dose_1 = vdb.opv_dose_1;
 
@@ -137,10 +226,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '783' and vaccination_sequence = '2'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.opv_dose_2 = vdb.opv_dose_2;
 
@@ -158,10 +248,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '783' and vaccination_sequence = '3'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.opv_dose_3 = vdb.opv_dose_3;
 
@@ -179,10 +270,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '783' and vaccination_sequence = '4'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.opv_dose_4 = vdb.opv_dose_4;
 
@@ -200,10 +292,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '162342' and vaccination_sequence = '1'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.pcv_dose_1 = vdb.pcv_dose_1;
 
@@ -221,10 +314,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '162342' and vaccination_sequence = '2'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.pcv_dose_2 = vdb.pcv_dose_2;
 
@@ -242,10 +336,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '162342' and vaccination_sequence = '3'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.pcv_dose_3 = vdb.pcv_dose_3;
 
@@ -263,10 +358,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '1685' and vaccination_sequence = '1'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.pentavalent_dose_1 = vdb.pentavalent_dose_1;
 
@@ -285,10 +381,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '1685' and vaccination_sequence = '2'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.pentavalent_dose_2 = vdb.pentavalent_dose_2;
 
@@ -306,10 +403,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '1685' and vaccination_sequence = '3'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.pentavalent_dose_3 = vdb.pentavalent_dose_3;
 
@@ -327,10 +425,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '159698' and vaccination_sequence = '1'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.rv_dose_1 = vdb.rv_dose_1;
 
@@ -348,10 +447,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '159698' and vaccination_sequence = '2'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.rv_dose_2 = vdb.rv_dose_2;
 
@@ -369,10 +469,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '36' and vaccination_sequence = '1'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.measles_mr_dose_1 = vdb.measles_mr_dose_1;
 
@@ -390,10 +491,11 @@ from (select
   (select value_numeric from obs where concept_id = 1418 and obs_group_id = parent.obs_id and person_id = parent.person_id) as vaccination_sequence
   from obs as parent
   join encounter e on e.encounter_id = parent.encounter_id
-  where e.encounter_type = 31 and e.voided = 0) as t
-  where t.vaccination_date is not null
+  where e.encounter_type = 4 and e.voided = 0) as t
+  where t.vaccination_date is not null and concept_id = '36' and vaccination_sequence = '2'
+  group by encounter_id
 ) vdb on
-vdb.person_id = far.patient_id and vdb.encounter_id = far.encounter_id
+vdb.person_id = far.patient_id and vdb.vaccination_date = far.encounter_date
 set
   far.measles_mr_dose_2 = vdb.measles_mr_dose_2;
 
@@ -410,7 +512,7 @@ join (
     inner join person p on p.person_id = e.patient_id
     inner join obs o on o.encounter_id = e.encounter_id,
     (select * from encounter where encounter_type = 29) as be
-    where e.encounter_type = 21 and e.voided = 0 and be.encounter_datetime = e.encounter_datetime
+    where e.encounter_type = 2 and e.voided = 0 and be.encounter_datetime = e.encounter_datetime
     group by e.patient_id) gmf on
     gmf.patient_id = far.patient_id and gmf.encounter_id = far.encounter_id
 set
@@ -459,8 +561,9 @@ from
   e.patient_id,
   p.gender,
   p.birthdate,
-  max(if (o.concept_id = '163531',o.value_text,null)) as location_name,
-  e.encounter_datetime as encounter_date, -- This can be changed when growth monitoring encounters have encounter datetime observations
+  e.location_id,
+  l.name as location_name,
+  e.encounter_datetime as encounter_date,
   max(if (o.concept_id = '160636',o.value_boolean,null)) as from_outside_catchment_area,
   pa.value as child_register_card_no,
   if((gender = 'Male' or gender = 'M' or gender = '1') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 12,1, null) as lt_12_months_male,
@@ -473,9 +576,10 @@ from
   inner join person p on p.person_id = e.patient_id
   inner join person_attribute pa on pa.person_id = e.patient_id
   inner join patient_identifier pi on e.patient_id = pi.patient_id
+  inner join location l on e.location_id = l.location_id
   inner join obs o on o.person_id = p.person_id,
   obs go
- where e.encounter_type = 21
+ where e.encounter_type = 2
   and pi.identifier_type = 17
   and pa.person_attribute_type_id = 20
   and e.voided = 0
@@ -502,7 +606,7 @@ from
   from encounter e
   inner join obs o on o.encounter_id = e.encounter_id
   inner join person p on p.person_id = e.patient_id
-  where e.encounter_type = 21 and o.concept_id = '5089'
+  where e.encounter_type = 2 and o.concept_id = '5089'
   order by e.encounter_datetime) weight_gains) wg on
     wg.patient_id = far.patient_id and wg.encounter_id = far.encounter_id
 set
