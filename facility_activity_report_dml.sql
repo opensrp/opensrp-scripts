@@ -37,8 +37,6 @@ r.lt_12_months_male,
 r.lt_12_months_female,
 r.btwn_12_59_months_male,
 r.btwn_12_59_months_female,
-r.0_23_months_weighed,
-r.24_59_months_weighed,
 r.from_outside_catchment_area
 from
 (select
@@ -56,8 +54,6 @@ from
   if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 12,1, null) as lt_12_months_female,
   if((gender = 'Male' or gender = 'M' or gender = '1') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_male,
   if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_female,
-  if((o.concept_id = '5089' and o.value_numeric is not null) and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 23,1, null) as 0_23_months_weighed,
-  if((o.concept_id = '5089' and o.value_numeric is not null) and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 23 and 59,1, null) as 24_59_months_weighed
  from encounter e
   inner join person p on p.person_id = e.patient_id
   inner join person_attribute pa on pa.person_id = e.patient_id
@@ -110,8 +106,6 @@ r.lt_12_months_male,
 r.lt_12_months_female,
 r.btwn_12_59_months_male,
 r.btwn_12_59_months_female,
-r.0_23_months_weighed,
-r.24_59_months_weighed,
 r.from_outside_catchment_area
 from
 (select
@@ -128,9 +122,7 @@ from
   if((p.gender = 'Male' or p.gender = 'M' or p.gender = '1') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) < 12,1, null) as lt_12_months_male,
   if((p.gender = 'female' or p.gender = 'F' or p.gender = '2') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) < 12,1, null) as lt_12_months_female,
   if((p.gender = 'Male' or p.gender = 'M' or p.gender = '1') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_male,
-  if((p.gender = 'female' or p.gender = 'F' or p.gender = '2') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_female,
-  if((o.concept_id = '5089' and o.value_numeric is not null) and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) < 23,1, null) as 0_23_months_weighed,
-  if((o.concept_id = '5089' and o.value_numeric is not null) and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) between 23 and 59,1, null) as 24_59_months_weighed
+  if((p.gender = 'female' or p.gender = 'F' or p.gender = '2') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_female
  from encounter e
   inner join person p on p.person_id = e.patient_id
   inner join person_attribute pa on pa.person_id = e.patient_id
@@ -145,6 +137,70 @@ from
   and e.voided = 0
  group by e.patient_id
  order by patient_id) r;
+
+ -- Insert unregistered growth monitoring encounters
+
+ INSERT INTO facility_activity_report(
+   encounter_id,
+   zeir_id,
+   patient_id,
+   gender,
+   birthdate,
+   location_id,
+   location_name,
+   encounter_date,
+   child_register_card_no,
+   lt_12_months_male,
+   lt_12_months_female,
+   btwn_12_59_months_male,
+   btwn_12_59_months_female,
+   0_23_months_weighed,
+   24_59_months_weighed,
+   from_outside_catchment_area
+ )
+ select
+ r.encounter_id,
+ r.zeir_id,
+ r.patient_id,
+ r.gender,
+ r.birthdate,
+ r.location_id,
+ r.location_name,
+ r.encounter_date,
+ r.child_register_card_no,
+ r.lt_12_months_male,
+ r.lt_12_months_female,
+ r.btwn_12_59_months_male,
+ r.btwn_12_59_months_female,
+ r.from_outside_catchment_area
+ from
+ (select
+   e.encounter_id,
+   pi.identifier as zeir_id,
+   e.patient_id,
+   p.gender,
+   p.birthdate,
+   e.location_id,
+   l.name as location_name,
+   e.encounter_datetime as encounter_date,
+   max(if (o.concept_id = '160636',o.value_boolean,null)) as from_outside_catchment_area,
+   pa.value as child_register_card_no,
+   if((p.gender = 'Male' or p.gender = 'M' or p.gender = '1') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) < 12,1, null) as lt_12_months_male,
+   if((p.gender = 'female' or p.gender = 'F' or p.gender = '2') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) < 12,1, null) as lt_12_months_female,
+   if((p.gender = 'Male' or p.gender = 'M' or p.gender = '1') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_male,
+   if((p.gender = 'female' or p.gender = 'F' or p.gender = '2') and TIMESTAMPDIFF(Month, p.birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_female
+  from encounter e
+   inner join person p on p.person_id = e.patient_id
+   inner join person_attribute pa on pa.person_id = e.patient_id
+   inner join patient_identifier pi on e.patient_id = pi.patient_id
+   inner join location l on e.location_id = l.location_id
+   inner join obs o on o.encounter_id = e.encounter_id
+  where e.encounter_type = 2
+   and pi.identifier_type = 17
+   and pa.person_attribute_type_id = 20
+   and e.encounter_datetime not in (select encounter_date from facility_activity_report)
+   and e.voided = 0
+  group by e.encounter_id) r;
 
 -- Update existing records with BCG vaccination data
 
@@ -504,87 +560,19 @@ set
 UPDATE facility_activity_report far
 join (
   select
-    be.encounter_id,
+    e.encounter_id,
+    e.encounter_datetime,
     e.patient_id,
-    if((o.concept_id = '5089' and o.value_numeric is not null) and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 23,1, null) as 0_23_months_weighed,
-    if((o.concept_id = '5089' and o.value_numeric is not null) and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 23 and 59,1, null) as 24_59_months_weighed
+    if((o.value_numeric is not null) and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 23,1, null) as 0_23_months_weighed,
+    if((o.value_numeric is not null) and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 23 and 59,1, null) as 24_59_months_weighed
     from encounter e
+    inner join obs o on o.encounter_id = e.encounter_id
     inner join person p on p.person_id = e.patient_id
-    inner join obs o on o.encounter_id = e.encounter_id,
-    (select * from encounter where encounter_type = 29) as be
-    where e.encounter_type = 2 and e.voided = 0 and be.encounter_datetime = e.encounter_datetime
-    group by e.patient_id) gmf on
-    gmf.patient_id = far.patient_id and gmf.encounter_id = far.encounter_id
+    where e.voided = 0 and o.concept_id = 5089) gmf on
+    gmf.patient_id = far.patient_id and gmf.encounter_datetime = far.encounter_date
 set
   far.0_23_months_weighed = gmf.0_23_months_weighed,
   far.24_59_months_weighed = gmf.24_59_months_weighed;
-
--- Insert unregistered growth monitoring encounters
-
-INSERT INTO facility_activity_report(
-  encounter_id,
-  zeir_id,
-  patient_id,
-  gender,
-  birthdate,
-  location_name,
-  encounter_date,
-  child_register_card_no,
-  lt_12_months_male,
-  lt_12_months_female,
-  btwn_12_59_months_male,
-  btwn_12_59_months_female,
-  from_outside_catchment_area,
-  0_23_months_weighed,
-  24_59_months_weighed
-)
-select
-r.encounter_id,
-r.zeir_id,
-r.patient_id,
-r.gender,
-r.birthdate,
-r.location_name,
-r.encounter_date,
-r.child_register_card_no,
-r.lt_12_months_male,
-r.lt_12_months_female,
-r.btwn_12_59_months_male,
-r.btwn_12_59_months_female,
-r.from_outside_catchment_area,
-r.0_23_months_weighed,
-r.24_59_months_weighed
-from
-(select
-  e.encounter_id,
-  pi.identifier as zeir_id,
-  e.patient_id,
-  p.gender,
-  p.birthdate,
-  e.location_id,
-  l.name as location_name,
-  e.encounter_datetime as encounter_date,
-  max(if (o.concept_id = '160636',o.value_boolean,null)) as from_outside_catchment_area,
-  pa.value as child_register_card_no,
-  if((gender = 'Male' or gender = 'M' or gender = '1') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 12,1, null) as lt_12_months_male,
-  if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 12,1, null) as lt_12_months_female,
-  if((gender = 'Male' or gender = 'M' or gender = '1') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_male,
-  if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_female,
-  if((go.concept_id = '5089' and go.value_numeric is not null) and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 23,1, null) as 0_23_months_weighed,
-  if((go.concept_id = '5089' and go.value_numeric is not null) and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 23 and 59,1, null) as 24_59_months_weighed
- from encounter e
-  inner join person p on p.person_id = e.patient_id
-  inner join person_attribute pa on pa.person_id = e.patient_id
-  inner join patient_identifier pi on e.patient_id = pi.patient_id
-  inner join location l on e.location_id = l.location_id
-  inner join obs o on o.person_id = p.person_id,
-  obs go
- where e.encounter_type = 2
-  and pi.identifier_type = 17
-  and pa.person_attribute_type_id = 20
-  and e.voided = 0
-  and go.encounter_id = e.encounter_id
- group by e.encounter_id) r;
 
 -- Update all encounters with their growth
 UPDATE facility_activity_report far
@@ -592,6 +580,7 @@ join (
   select
 	patient_id,
   encounter_id,
+  encounter_datetime,
 	if((TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 23) and (weight - previous_weight) <= 0,1, null) as 0_23_months_no_weight_gain,
 	if((TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 23 and 59) and (weight - previous_weight) <= 0,1, null) as 24_59_months_no_weight_gain
 from
@@ -607,8 +596,8 @@ from
   inner join obs o on o.encounter_id = e.encounter_id
   inner join person p on p.person_id = e.patient_id
   where e.encounter_type = 2 and o.concept_id = '5089'
-  order by e.encounter_datetime) weight_gains) wg on
-    wg.patient_id = far.patient_id and wg.encounter_id = far.encounter_id
+  group by e.encounter_datetime) weight_gains) wg on
+    wg.patient_id = far.patient_id and wg.encounter_datetime = far.encounter_date
 set
   far.0_23_months_no_weight_gain = wg.0_23_months_no_weight_gain,
   far.24_59_months_no_weight_gain = wg.24_59_months_no_weight_gain;
