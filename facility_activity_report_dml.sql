@@ -5,7 +5,7 @@ CREATE PROCEDURE populate_etl_facility_activity_report()
 BEGIN
 -- Initialise facility activity report table with birth registration and vaccination records
 
-INSERT INTO facility_activity_report(
+INSERT INTO path_zambia_etl.facility_activity_report(
   encounter_id,
   zeir_id,
   patient_id,
@@ -19,8 +19,6 @@ INSERT INTO facility_activity_report(
   lt_12_months_female,
   btwn_12_59_months_male,
   btwn_12_59_months_female,
-  0_23_months_weighed,
-  24_59_months_weighed,
   from_outside_catchment_area
 )
 select
@@ -53,7 +51,7 @@ from
   if((gender = 'Male' or gender = 'M' or gender = '1') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 12,1, null) as lt_12_months_male,
   if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) < 12,1, null) as lt_12_months_female,
   if((gender = 'Male' or gender = 'M' or gender = '1') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_male,
-  if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_female,
+  if((gender = 'female' or gender = 'F' or gender = '2') and TIMESTAMPDIFF(Month, birthdate, CURDATE()) between 12 and 59,1, null) as btwn_12_59_months_female
  from encounter e
   inner join person p on p.person_id = e.patient_id
   inner join person_attribute pa on pa.person_id = e.patient_id
@@ -74,7 +72,7 @@ from
 -- Child Register Card Number ID: `20`
 
 -- Add vaccination records for patients that took place on different date
-INSERT INTO facility_activity_report(
+INSERT INTO path_zambia_etl.facility_activity_report(
   encounter_id,
   zeir_id,
   patient_id,
@@ -88,8 +86,6 @@ INSERT INTO facility_activity_report(
   lt_12_months_female,
   btwn_12_59_months_male,
   btwn_12_59_months_female,
-  0_23_months_weighed,
-  24_59_months_weighed,
   from_outside_catchment_area
 )
 select
@@ -129,7 +125,7 @@ from
   inner join patient_identifier pi on e.patient_id = pi.patient_id
   inner join obs o on o.encounter_id = e.encounter_id
   inner join location l on e.location_id = l.location_id
-  right join facility_activity_report far on e.patient_id = far.patient_id
+  right join path_zambia_etl.facility_activity_report far on e.patient_id = far.patient_id
  where e.encounter_type = 4
   and pi.identifier_type = 17
   and pa.person_attribute_type_id = 20
@@ -140,7 +136,7 @@ from
 
  -- Insert unregistered growth monitoring encounters
 
- INSERT INTO facility_activity_report(
+ INSERT INTO path_zambia_etl.facility_activity_report(
    encounter_id,
    zeir_id,
    patient_id,
@@ -154,8 +150,6 @@ from
    lt_12_months_female,
    btwn_12_59_months_male,
    btwn_12_59_months_female,
-   0_23_months_weighed,
-   24_59_months_weighed,
    from_outside_catchment_area
  )
  select
@@ -198,13 +192,13 @@ from
   where e.encounter_type = 2
    and pi.identifier_type = 17
    and pa.person_attribute_type_id = 20
-   and e.encounter_datetime not in (select encounter_date from facility_activity_report)
+   and e.encounter_datetime not in (select encounter_date from path_zambia_etl.facility_activity_report)
    and e.voided = 0
   group by e.encounter_id) r;
 
 -- Update existing records with BCG vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if(concept_id = '886', 1, null) as bcg_dose_lt_1yr
@@ -226,7 +220,7 @@ set
 
 -- Update existing records with opv vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '783' and vaccination_sequence = '0', 1, null) as opv_dose_0
@@ -248,7 +242,7 @@ set
 
 -- Update existing records with opv 1 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '783' and vaccination_sequence = '1', 1, null) as opv_dose_1
@@ -270,7 +264,7 @@ set
 
 -- Update existing records with opv 2 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '783' and vaccination_sequence = '2', 1, null) as opv_dose_2
@@ -292,7 +286,7 @@ set
 
 -- Update existing records with opv 3 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '783' and vaccination_sequence = '3', 1, null) as opv_dose_3
@@ -314,7 +308,7 @@ set
 
 -- Update existing records with opv 4 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '783' and vaccination_sequence = '4', 1, null) as opv_dose_4
@@ -336,7 +330,7 @@ set
 
 -- Update existing records with pcv_dose_1 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '162342' and vaccination_sequence = '1', 1, null) as pcv_dose_1
@@ -358,7 +352,7 @@ set
 
 -- Update existing records with pcv_dose_2 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '162342' and vaccination_sequence = '2', 1, null) as pcv_dose_2
@@ -380,7 +374,7 @@ set
 
 -- Update existing records with pcv_dose_3 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '162342' and vaccination_sequence = '3', 1, null) as pcv_dose_3
@@ -402,7 +396,7 @@ set
 
 -- Update existing records with pentavalent_dose_1 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '1685' and vaccination_sequence = '1', 1, null) as pentavalent_dose_1
@@ -425,7 +419,7 @@ set
 
 -- Update existing records with pentavalent_dose_2 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '1685' and vaccination_sequence = '2', 1, null) as pentavalent_dose_2
@@ -447,7 +441,7 @@ set
 
 -- Update existing records with pentavalent_dose_3 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '1685' and vaccination_sequence = '3', 1, null) as pentavalent_dose_3
@@ -469,7 +463,7 @@ set
 
 -- Update existing records with rv_dose_1 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '159698' and vaccination_sequence = '1', 1, null) as rv_dose_1
@@ -491,7 +485,7 @@ set
 
 -- Update existing records with rv_dose_2 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '159698' and vaccination_sequence = '2', 1, null) as rv_dose_2
@@ -513,7 +507,7 @@ set
 
 -- Update existing records with measles_mr_dose_1 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '36' and vaccination_sequence = '1', 1, null) as measles_mr_dose_1
@@ -535,7 +529,7 @@ set
 
 -- Update existing records with measles_mr_dose_2 vaccination data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select person_id, vaccination_date, encounter_id,
   if (concept_id = '36' and vaccination_sequence = '2', 1, null) as measles_mr_dose_2
@@ -557,7 +551,7 @@ set
 
 -- Update existing records with growth monitoring data
 
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select
     e.encounter_id,
@@ -575,7 +569,7 @@ set
   far.24_59_months_weighed = gmf.24_59_months_weighed;
 
 -- Update all encounters with their growth
-UPDATE facility_activity_report far
+UPDATE path_zambia_etl.facility_activity_report far
 join (
   select
 	patient_id,

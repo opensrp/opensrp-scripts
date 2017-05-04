@@ -1,10 +1,18 @@
+SELECT "Droping existing path_zambia_etl database";
+
+DROP DATABASE if exists path_zambia_etl;
+
+SELECT "Recreate path_zambia_etl database";
+
+CREATE DATABASE path_zambia_etl;
+
 SELECT "Droping existing facility activity report etl table";
 
-DROP TABLE if exists openmrs.facility_activity_report;
+DROP TABLE if exists path_zambia_etl.facility_activity_report;
 
 SELECT "Recreating facility activity etl table";
 
-CREATE TABLE facility_activity_report (
+CREATE TABLE path_zambia_etl.facility_activity_report (
   encounter_id INT(11) not null primary key,
   zeir_id VARCHAR(50),
   patient_id INT(11),
@@ -40,4 +48,6 @@ CREATE TABLE facility_activity_report (
   measles_mr_dose_1 INT(11),
   immunised_fully INT(11),
   measles_mr_dose_2 INT(11)
-)
+);
+
+SELECT "Created path_zambia_etl database and facility activity report table";
