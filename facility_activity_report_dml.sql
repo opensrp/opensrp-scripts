@@ -596,7 +596,14 @@ set
   far.0_23_months_no_weight_gain = wg.0_23_months_no_weight_gain,
   far.24_59_months_no_weight_gain = wg.24_59_months_no_weight_gain;
 
--- Add fully immunised update
+-- Add providers
+UPDATE path_zambia_etl.facility_activity_report far
+join(
+  select encounter_id, ep.provider_id, name from encounter_provider ep inner join provider p on ep.provider_id = p.provider_id
+) p on p.encounter_id = far.encounter_id
+set
+  far.provider_id = p.provider_id,
+  far.provider_name = p.name;
 
 END$$
 DELIMITER ;

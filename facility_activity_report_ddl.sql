@@ -21,6 +21,8 @@ CREATE TABLE path_zambia_etl.facility_activity_report (
   location_id INT(11),
   location_name VARCHAR(255),
   encounter_date DATETIME,
+  provider_id INT(11),
+  provider_name VARCHAR(255),
   child_register_card_no VARCHAR(255),
   lt_12_months_male INT(11),
   lt_12_months_female INT(11),
