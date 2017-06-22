@@ -1,9 +1,13 @@
-DELIMITER $$
-DROP PROCEDURE IF EXISTS populate_etl_facility_activity_report$$
-CREATE PROCEDURE populate_etl_facility_activity_report()
+-- DELIMITER $$
+-- DROP PROCEDURE IF EXISTS populate_etl_facility_activity_report$$
+-- CREATE PROCEDURE populate_etl_facility_activity_report()
 
-BEGIN
+-- BEGIN
 -- Initialise facility activity report table with birth registration and vaccination records
+
+TRUNCATE TABLE path_zambia_etl.facility_activity_report;
+
+USE openmrs_etl_test;
 
 INSERT INTO path_zambia_etl.facility_activity_report(
   encounter_id,
@@ -605,7 +609,7 @@ set
   far.provider_id = p.provider_id,
   far.provider_name = p.name;
 
-END$$
-DELIMITER ;
+-- END$$
+-- DELIMITER ;
 
-CALL populate_etl_facility_activity_report();
+-- CALL populate_etl_facility_activity_report();
