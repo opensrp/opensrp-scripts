@@ -7,7 +7,7 @@
 
 TRUNCATE TABLE path_zambia_etl.facility_activity_report;
 
-USE openmrs_etl_test;
+USE openmrs;
 
 INSERT INTO path_zambia_etl.facility_activity_report(
   encounter_id,
