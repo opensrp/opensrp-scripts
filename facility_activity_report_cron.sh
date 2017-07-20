@@ -1,22 +1,23 @@
-#!/bin/sh
+#!/bin/bash
+generateEtl() {
+  # $1 - Path to ETL scripts
+  # $2 - MySQL user
+  # $3 - MySQL password
+  # $4 - Slack channel to post message
+  # $5 - Slack token to use
+  cd $1
 
-now="$(date +'%d_%m_%Y_%H_%M_%S')"
-file_name="facility_activity_report_$now".csv
-report_folder="~/etl"
+  now="$(date +'%d_%m_%Y_%H_%M_%S')"
+  file_name="facility_activity_report_$now".csv
+  report_folder="./etl"
+  sourceFile="$report_folder/$file_name"
+  destinationFile="etl/$file_name"
 
-sourceFile="$report_folder/$file_name"
-destinationFile="etl/$file_name"
+  mkdir -p $report_folder
+  /usr/bin/mysql -u $2 -p$3 < ./facility_activity_report_dml.sql
+  /usr/bin/mysql -u $2 -p$3 -e 'select * from path_zambia_etl.facility_activity_report' | sed  's/\t/,/g' > $sourceFile
+  /usr/bin/aws s3 cp $sourceFile s3://opensrp/reports/$destinationFile --acl public-read
+  /usr/bin/curl -F username="PATH Zambia ETL" -F text="https://s3.amazonaws.com/opensrp/reports/$destinationFile" -F channel=$4 -F token="$5" https://slack.com/api/chat.postMessage
+}
 
-mysql -u etlMysqlUser -pXXXXXXX < ~/facility_activity_report_dml.sql
-
-mysql -u etlMysqlUser -pXXXXXXX -e 'select * from path_zambia_etl.facility_activity_report' | sed  's/\t/,/g' > $sourceFile
-
-
-export AWS_ACCESS_KEY_ID="XXXXXXX"
-export AWS_SECRET_ACCESS_KEY="XXXXXXX"
-
-duplicity --s3-use-new-style --no-encryption $sourceFile s3+http://opensrp/reports/$destinationFile
-
-unset AWS_ACCESS_KEY_ID
-unset AWS_SECRET_ACCESS_KEY
-unset AWS_SECRET_ACCESS_KEY
+generateEtl $1 $2 $3 $4 $5
