@@ -8,7 +8,7 @@ generateEtl() {
   # $6 - Report life in days
   cd $1
 
-  now="$(date +'%d_%m_%Y_%H_%M_%S')"
+  now="$(date +'%d_%m_%Y')"
   file_name="facility_activity_report_$now".csv
   report_folder="./etl"
   sourceFile="$report_folder/$file_name"
