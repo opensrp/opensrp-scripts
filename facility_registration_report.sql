@@ -1,4 +1,7 @@
 
+-- Truncate the registration flat table for new extract
+TRUNCATE TABLE path_zambia_etl.facility_registration_report;
+
  -- Initialise facility registration report table with birth registration info
 INSERT INTO path_zambia_etl.facility_registration_report(
 person_id,

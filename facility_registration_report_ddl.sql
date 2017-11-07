@@ -2,7 +2,6 @@ CREATE DATABASE IF NOT EXISTS path_zambia_etl;
 
 DROP TABLE if exists path_zambia_etl.facility_registration_report;
 
-
 CREATE TABLE path_zambia_etl.facility_registration_report (
  person_id int(11) NOT NULL,
  zeir_id varchar(45) DEFAULT NULL,
