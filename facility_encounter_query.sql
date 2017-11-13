@@ -30,7 +30,7 @@ Measles2 as 'Measles 2',
 MR2,
 BCG2,
 vitamin_a as 'Vitamin A',
-mebendezol as 'Mebendezol' FROM path_zambia_etl.facility_encounter_report
+mebendezol as 'Mebendezol' FROM path_zambia_etl.facility_encounter_report;
 
 
 
