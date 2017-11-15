@@ -19,7 +19,9 @@ CREATE TABLE path_zambia_etl.facility_encounter_report (
   province_name varchar(100) DEFAULT NULL,
   provider_id int(11) DEFAULT NULL,
   provider_name varchar(100) DEFAULT NULL,
+  child_weighed tinyint(4) DEFAULT NULL,
   child_weight varchar(45) DEFAULT NULL,
+  z_score double DEFAULT NULL,
   BCG1 tinyint(4) DEFAULT NULL,
   OPV0 tinyint(4) DEFAULT NULL,
   OPV1 tinyint(4) DEFAULT NULL,
@@ -42,6 +44,4 @@ CREATE TABLE path_zambia_etl.facility_encounter_report (
   vitamin_a tinyint(4) DEFAULT NULL,
   mebendezol tinyint(4) DEFAULT NULL,
   PRIMARY KEY (encounter_id)
-)
-
-
+) ;

@@ -5,11 +5,17 @@ gender as 'Gender',
 dob as 'Date of Birth',
 mother_id as 'Mother ID',
 child_hiv_expo as 'Child HIV Exposure',
+fac_id as 'Facility ID',
 fac_name as 'Facility Name',
+district_id as 'District ID',
 district_name as 'District Name',
+province_id as 'Province ID',
 province_name as 'Province Name',
+provider_id as 'Provider ID',
 provider_name as 'Provider Name',
+ child_weighed as ' Child Weighed',
 child_weight as 'Child Weight',
+z_score as 'Z-score',
 BCG1,
 OPV0,
 OPV1,
@@ -30,7 +36,8 @@ Measles2 as 'Measles 2',
 MR2,
 BCG2,
 vitamin_a as 'Vitamin A',
-mebendezol as 'Mebendezol' FROM path_zambia_etl.facility_encounter_report;
+mebendezol as 'Mebendezol' FROM path_zambia_etl.facility_encounter_report
+
 
 
 

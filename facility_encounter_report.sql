@@ -19,7 +19,7 @@ openmrs.person.gender,
 openmrs.person.birthdate
 
 FROM openmrs.encounter
-JOIN openmrs.person  on person_id = openmrs.encounter.patient_id AND openmrs.encounter .encounter_type NOT IN(1,8);
+INNER JOIN openmrs.person  on person_id = openmrs.encounter.patient_id AND openmrs.encounter.encounter_type NOT IN(1,8) WHERE date(openmrs.encounter.date_created) = (SELECT CAST(NOW() - INTERVAL 1 DAY AS DATE));
 
 -- provider id
 UPDATE
@@ -78,7 +78,7 @@ SET path_zambia_etl.facility_encounter_report.district_id = (SELECT location_id 
 (SELECT parent_location FROM openmrs.location WHERE location_id=
 (SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_encounter_report.fac_id))));
 
- -- Update Province
+ -- Update Province id
   UPDATE path_zambia_etl.facility_encounter_report prov,
 (   SELECT distinct district_id
     FROM path_zambia_etl.facility_encounter_report
@@ -92,7 +92,6 @@ UPDATE
     INNER JOIN openmrs.location  ON path_zambia_etl.facility_encounter_report.district_id = openmrs.location.location_id
 SET path_zambia_etl.facility_encounter_report.district_name = openmrs.location.name;
 
-
 -- Update province name
 UPDATE
     path_zambia_etl.facility_encounter_report
@@ -101,11 +100,12 @@ SET path_zambia_etl.facility_encounter_report.province_name = openmrs.location.n
 
 -- Update columns
   UPDATE path_zambia_etl.facility_encounter_report cw,
-(   SELECT encounter_id,person_id FROM path_zambia_etl.facility_encounter_report
+(   SELECT encounter_id FROM path_zambia_etl.facility_encounter_report
 ) cwi
 SET
 -- Update Weight
-cw.child_weight  = (SELECT value_numeric FROM openmrs.obs WHERE encounter_id = cwi.encounter_id AND person_id = cwi.person_id AND concept_id =5089),
+cw.child_weight  = (SELECT value_numeric FROM openmrs.obs WHERE encounter_id = cwi.encounter_id AND concept_id =5089),
+cw.z_score  = (SELECT value_numeric FROM openmrs.obs WHERE encounter_id = cwi.encounter_id AND concept_id =162584),
 
 -- Update Vaccines
 cw.BCG1 = (SELECT if(value_numeric =1,1,NULL)  FROM openmrs.obs WHERE obs_group_id in (
@@ -165,11 +165,17 @@ SELECT obs_id  FROM openmrs.obs WHERE concept_id = 162586  AND encounter_id  =cw
 cw.BCG2 = (SELECT if(value_numeric =2,1,NULL)  FROM openmrs.obs WHERE obs_group_id in (
 SELECT obs_id  FROM openmrs.obs WHERE concept_id = 886  AND encounter_id  =cwi.encounter_id) AND concept_id =1418),
 
+cw.BCG2 = (SELECT if(value_numeric =2,1,NULL)  FROM openmrs.obs WHERE obs_group_id in (
+SELECT obs_id  FROM openmrs.obs WHERE concept_id = 886  AND encounter_id  =cwi.encounter_id) AND concept_id =1418),
+
 cw.vitamin_a = (SELECT if(value_coded =1065,1,NULL)  FROM openmrs.obs WHERE concept_id = 161534  AND encounter_id = cwi.encounter_id),
 cw.mebendezol = (SELECT if(value_coded =1065,1,NULL)  FROM openmrs.obs WHERE concept_id = 159922  AND encounter_id = cwi.encounter_id)
 
 WHERE cw.encounter_id = cwi.encounter_id;
 
+-- Update child weighed
+UPDATE path_zambia_etl.facility_encounter_report SET child_weighed = 1 WHERE child_weight IS NOT NULL;
+
 -- Clean up unused encounter rows
-DELETE FROM path_zambia_etl.facility_encounter_report WHERE child_weight is NULL AND BCG1 is NULL AND OPV0 is NULL AND OPV1 is NULL AND PCV1 is NULL AND Penta1 is NULL AND Rota1 is NULL AND OPV2 is NULL AND PCV2 is NULL AND Penta2 is NULL AND Rota2 is NULL AND OPV3 is NULL AND PCV3 is NULL AND Penta3 is NULL AND Measles1 is NULL AND MR1 is NULL AND OPV4 is NULL AND Measles2 is NULL AND MR2 is NULL AND BCG2 is NULL AND vitamin_a is NULL AND mebendezol is NULL;
+DELETE FROM path_zambia_etl.facility_encounter_report WHERE child_weight is NULL AND child_weighed AND z_score is NULL AND BCG1 is NULL AND OPV0 is NULL AND OPV1 is NULL AND PCV1 is NULL AND Penta1 is NULL AND Rota1 is NULL AND OPV2 is NULL AND PCV2 is NULL AND Penta2 is NULL AND Rota2 is NULL AND OPV3 is NULL AND PCV3 is NULL AND Penta3 is NULL AND Measles1 is NULL AND MR1 is NULL AND OPV4 is NULL AND Measles2 is NULL AND MR2 is NULL AND BCG2 is NULL AND vitamin_a is NULL AND mebendezol is NULL;
 
