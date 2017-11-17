@@ -55,14 +55,15 @@ WHERE fem.zeir_id = feim.zeir_id;
 (   SELECT distinct person_id, value_coded
     FROM openmrs.obs WHERE concept_id = 1396
 ) cnt
-SET cn.child_hiv_expo  = (SELECT name FROM openmrs.concept_name WHERE concept_id = cnt.value_coded AND locale = 'en' AND concept_name_type='FULLY_SPECIFIED')
+SET cn.child_hiv_expo  = (CASE(SELECT name FROM openmrs.concept_name WHERE concept_id = cnt.value_coded AND locale = 'en' AND concept_name_type='FULLY_SPECIFIED')
+  WHEN 'POSITIVE' THEN 'YES' WHEN 'NEGATIVE' THEN 'NO' END )
 WHERE cn.person_id = cnt.person_id;
 
 -- Update location name
 UPDATE
     path_zambia_etl.facility_encounter_report
     INNER JOIN openmrs.location  ON path_zambia_etl.facility_encounter_report.fac_id = openmrs.location.location_id
-SET path_zambia_etl.facility_encounter_report.fac_name = openmrs.location.name;
+SET path_zambia_etl.facility_encounter_report.fac_name = SUBSTR(openmrs.location.name,4);
 
  -- Update facility location for health centres
 UPDATE
@@ -90,13 +91,13 @@ WHERE prov.district_id = aprov.district_id;
 UPDATE
     path_zambia_etl.facility_encounter_report
     INNER JOIN openmrs.location  ON path_zambia_etl.facility_encounter_report.district_id = openmrs.location.location_id
-SET path_zambia_etl.facility_encounter_report.district_name = openmrs.location.name;
+SET path_zambia_etl.facility_encounter_report.district_name = SUBSTR(openmrs.location.name,4) ;
 
 -- Update province name
 UPDATE
     path_zambia_etl.facility_encounter_report
     INNER JOIN openmrs.location  ON path_zambia_etl.facility_encounter_report.province_id = openmrs.location.location_id
-SET path_zambia_etl.facility_encounter_report.province_name = openmrs.location.name;
+SET path_zambia_etl.facility_encounter_report.province_name = SUBSTR(openmrs.location.name,4) ;
 
 -- Update columns
   UPDATE path_zambia_etl.facility_encounter_report cw,

@@ -15,7 +15,7 @@ patient_identifier.identifier,
 gender,
 birthdate
 
-FROM person
+FROM openmrs.person
 JOIN  patient_identifier on person_id =  patient_identifier.patient_id and patient_identifier.identifier_type =17;
 
 
@@ -57,7 +57,7 @@ WHERE pn.person_id = ptn.person_id;
 (   SELECT location_id, name
     FROM openmrs.location
 ) loc
-SET prl.facility_name  = loc.name
+SET prl.facility_name  = SUBSTR(loc.name,4)
 WHERE prl.facility_id = loc.location_id;
 
   -- Update birth location
@@ -88,7 +88,7 @@ WHERE cn.person_id = cnt.person_id;
 UPDATE
 path_zambia_etl.facility_registration_report
  INNER JOIN openmrs.location ON path_zambia_etl.facility_registration_report.health_facility  = openmrs.location.uuid
-SET path_zambia_etl.facility_registration_report.health_facility =  openmrs.location.name;
+SET path_zambia_etl.facility_registration_report.health_facility = SUBSTR(openmrs.location.name,4);
 
  -- Update Other residential area
   UPDATE path_zambia_etl.facility_registration_report otl,
@@ -121,22 +121,17 @@ WHERE mfd.person_id = bds.person_id;
 UPDATE
 path_zambia_etl.facility_registration_report
  INNER JOIN openmrs.location_tag_map ON path_zambia_etl.facility_registration_report .facility_id = openmrs.location_tag_map.location_id  AND openmrs.location_tag_map.location_tag_id = 4
-SET path_zambia_etl.facility_registration_report.district = (SELECT name FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_registration_report.facility_id)));
+SET path_zambia_etl.facility_registration_report.district = (SELECT SUBSTR(name,4) FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_registration_report.facility_id))),
+path_zambia_etl.facility_registration_report.province = (SELECT SUBSTR(name,4) FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id=( (SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_registration_report.facility_id)) )));
 
 -- Update facility location for zones
 UPDATE
 path_zambia_etl.facility_registration_report
  INNER JOIN openmrs.location_tag_map ON path_zambia_etl.facility_registration_report .facility_id = openmrs.location_tag_map.location_id  AND openmrs.location_tag_map.location_tag_id = 5
-SET path_zambia_etl.facility_registration_report.district = (SELECT name FROM openmrs.location WHERE location_id =
+SET path_zambia_etl.facility_registration_report.district = (SELECT SUBSTR(name,4) FROM openmrs.location WHERE location_id =
 (SELECT parent_location FROM openmrs.location WHERE location_id=
-(SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_registration_report.facility_id))));
+(SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_registration_report.facility_id)))),
 
-
- -- Update Province
-  UPDATE path_zambia_etl.facility_registration_report prov,
-(   SELECT district, person_id
-    FROM path_zambia_etl.facility_registration_report
-) aprov
-SET prov.province  = (SELECT name FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id=((SELECT location_id FROM openmrs.location WHERE name = aprov.district ))))
-WHERE prov.person_id = aprov.person_id;
+path_zambia_etl.facility_registration_report.province = (SELECT SUBSTR(name,4) FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id=
+(SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_registration_report.facility_id)))));
 
