@@ -16,7 +16,7 @@ gender,
 birthdate
 
 FROM openmrs.person
-JOIN  patient_identifier on person_id =  patient_identifier.patient_id and patient_identifier.identifier_type =17;
+JOIN  openmrs.patient_identifier on person_id =  patient_identifier.patient_id and patient_identifier.identifier_type =17;
 
 
 
