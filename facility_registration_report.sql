@@ -57,7 +57,7 @@ WHERE pn.person_id = ptn.person_id;
 (   SELECT location_id, name
     FROM openmrs.location
 ) loc
-SET prl.facility_name  = SUBSTR(loc.name,4)
+SET prl.facility_name  = (if(loc.name like 'so %',SUBSTR(loc.name,4), loc.name))
 WHERE prl.facility_id = loc.location_id;
 
   -- Update birth location
@@ -115,17 +115,17 @@ WHERE mfd.person_id = bds.person_id;
 UPDATE
 path_zambia_etl.facility_registration_report
  INNER JOIN openmrs.location_tag_map ON path_zambia_etl.facility_registration_report .facility_id = openmrs.location_tag_map.location_id  AND openmrs.location_tag_map.location_tag_id = 4
-SET path_zambia_etl.facility_registration_report.district = (SELECT SUBSTR(name,4) FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_registration_report.facility_id))),
-path_zambia_etl.facility_registration_report.province = (SELECT SUBSTR(name,4) FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id=( (SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_registration_report.facility_id)) )));
+SET path_zambia_etl.facility_registration_report.district =  (SELECT (if(name like 'so %',SUBSTR(name,4), name)) FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_registration_report.facility_id))),
+path_zambia_etl.facility_registration_report.province = (SELECT (if(name like 'so %',SUBSTR(name,4), name)) FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id=( (SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_registration_report.facility_id)) )));
 
 -- Update facility location for zones
 UPDATE
 path_zambia_etl.facility_registration_report
  INNER JOIN openmrs.location_tag_map ON path_zambia_etl.facility_registration_report .facility_id = openmrs.location_tag_map.location_id  AND openmrs.location_tag_map.location_tag_id = 5
-SET path_zambia_etl.facility_registration_report.district = (SELECT SUBSTR(name,4) FROM openmrs.location WHERE location_id =
+SET path_zambia_etl.facility_registration_report.district = (SELECT (if(name like 'so %',SUBSTR(name,4), name)) FROM openmrs.location WHERE location_id =
 (SELECT parent_location FROM openmrs.location WHERE location_id=
 (SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_registration_report.facility_id)))),
 
-path_zambia_etl.facility_registration_report.province = (SELECT SUBSTR(name,4) FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id=
+path_zambia_etl.facility_registration_report.province = (SELECT (if(name like 'so %',SUBSTR(name,4), name)) FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id = (SELECT parent_location FROM openmrs.location WHERE location_id=
 (SELECT parent_location FROM openmrs.location WHERE location_id=( path_zambia_etl.facility_registration_report.facility_id)))));
 
