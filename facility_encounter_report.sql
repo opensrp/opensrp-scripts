@@ -37,10 +37,6 @@ UPDATE
 SET path_zambia_etl.facility_encounter_report.provider_name = openmrs.provider.name;
 
 -- Update ZEIR ID child
-UPDATE path_zambia_etl.facility_encounter_report
-SET facility_encounter_report.zeir_id  = (SELECT identifier FROM openmrs.patient_identifier WHERE patient_id = facility_encounter_report.person_id AND patient_identifier.identifier_type =17);
-
--- Update ZEIR ID child
 UPDATE
     path_zambia_etl.facility_encounter_report
     INNER JOIN openmrs.patient_identifier  ON path_zambia_etl.facility_encounter_report.person_id = patient_id  AND identifier_type =17
@@ -52,15 +48,13 @@ UPDATE
     INNER JOIN openmrs.patient_identifier  ON openmrs.patient_identifier.identifier = concat(zeir_id,"_mother")
 SET facility_encounter_report.mother_id = openmrs.patient_identifier.identifier;
 
-
-
 -- Update location name
 UPDATE
     path_zambia_etl.facility_encounter_report
     INNER JOIN openmrs.location  ON path_zambia_etl.facility_encounter_report.fac_id = openmrs.location.location_id
 SET path_zambia_etl.facility_encounter_report.fac_name = (if(openmrs.location.name like 'so %',SUBSTR(openmrs.location.name,4), openmrs.location.name));
 
- -- Update facility location for health centres
+-- Update facility location for health centres
 UPDATE
 path_zambia_etl.facility_encounter_report
  INNER JOIN openmrs.location_tag_map ON path_zambia_etl.facility_encounter_report.fac_id = openmrs.location_tag_map.location_id  AND openmrs.location_tag_map.location_tag_id = 4
@@ -95,7 +89,7 @@ UPDATE
 SET path_zambia_etl.facility_encounter_report.province_name = (if(openmrs.location.name like 'so %',SUBSTR(openmrs.location.name,4), openmrs.location.name));
 
 -- Update columns
-  UPDATE path_zambia_etl.facility_encounter_report cwi
+UPDATE path_zambia_etl.facility_encounter_report cwi
 SET
 -- Update Weight
 child_weight  = (SELECT value_numeric FROM openmrs.obs WHERE encounter_id = cwi.encounter_id AND concept_id =5089),
