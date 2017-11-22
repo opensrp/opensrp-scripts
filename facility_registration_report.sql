@@ -68,13 +68,7 @@ WHERE prl.facility_id = loc.location_id;
 SET prb.place_of_birth  = (SELECT name FROM openmrs.concept_name WHERE concept_id = pob.value_coded AND locale = 'en')
 WHERE prb.person_id = pob.person_id;
 
-  -- Update health facility
-  UPDATE path_zambia_etl.facility_registration_report prf,
-(   SELECT value_text, person_id
-    FROM openmrs.obs WHERE concept_id = 163531
-) hf
-SET prf.health_facility  = hf.value_text
-WHERE prf.person_id = hf.person_id;
+
 
  -- Update 'HIV exposure
   UPDATE path_zambia_etl.facility_registration_report cn,
