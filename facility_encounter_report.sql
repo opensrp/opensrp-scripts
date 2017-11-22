@@ -58,7 +58,7 @@ SET facility_encounter_report.mother_id = openmrs.patient_identifier.identifier;
 UPDATE
     path_zambia_etl.facility_encounter_report
     INNER JOIN openmrs.location  ON path_zambia_etl.facility_encounter_report.fac_id = openmrs.location.location_id
-SET path_zambia_etl.facility_encounter_report.fac_name = (if(openmrs.location.name like '%zone%',openmrs.location.name,SUBSTR(openmrs.location.name,4)));
+SET path_zambia_etl.facility_encounter_report.fac_name = (if(openmrs.location.name like 'so %',SUBSTR(openmrs.location.name,4), openmrs.location.name));
 
  -- Update facility location for health centres
 UPDATE
@@ -86,13 +86,13 @@ WHERE prov.district_id = aprov.district_id;
 UPDATE
     path_zambia_etl.facility_encounter_report
     INNER JOIN openmrs.location  ON path_zambia_etl.facility_encounter_report.district_id = openmrs.location.location_id
-SET path_zambia_etl.facility_encounter_report.district_name = openmrs.location.name;
+SET path_zambia_etl.facility_encounter_report.district_name = (if(openmrs.location.name like 'so %',SUBSTR(openmrs.location.name,4), openmrs.location.name));
 
 -- Update province name
 UPDATE
     path_zambia_etl.facility_encounter_report
     INNER JOIN openmrs.location  ON path_zambia_etl.facility_encounter_report.province_id = openmrs.location.location_id
-SET path_zambia_etl.facility_encounter_report.province_name = openmrs.location.name;
+SET path_zambia_etl.facility_encounter_report.province_name = (if(openmrs.location.name like 'so %',SUBSTR(openmrs.location.name,4), openmrs.location.name));
 
 -- Update columns
   UPDATE path_zambia_etl.facility_encounter_report cwi
