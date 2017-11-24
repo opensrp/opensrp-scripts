@@ -153,9 +153,6 @@ SELECT obs_id  FROM openmrs.obs WHERE concept_id = 162586  AND encounter_id  =cw
 BCG2 = (SELECT if(value_numeric =2,1,NULL)  FROM openmrs.obs WHERE obs_group_id in (
 SELECT obs_id  FROM openmrs.obs WHERE concept_id = 886  AND encounter_id  =cwi.encounter_id) AND concept_id =1418),
 
-BCG2 = (SELECT if(value_numeric =2,1,NULL)  FROM openmrs.obs WHERE obs_group_id in (
-SELECT obs_id  FROM openmrs.obs WHERE concept_id = 886  AND encounter_id  =cwi.encounter_id) AND concept_id =1418),
-
 vitamin_a = (SELECT if(value_coded =1065,1,NULL)  FROM openmrs.obs WHERE concept_id = 161534  AND encounter_id = cwi.encounter_id),
 mebendezol = (SELECT if(value_coded =1065,1,NULL)  FROM openmrs.obs WHERE concept_id = 159922  AND encounter_id = cwi.encounter_id)
 
