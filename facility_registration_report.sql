@@ -27,6 +27,14 @@ SET pr.date_first_seen  = ob.value_datetime, pr.timestamp_of_registration = ob.d
 pr.provider_id = (SELECT provider_id FROM openmrs.encounter_provider WHERE encounter_id = ob.encounter_id limit 1)
 WHERE pr.person_id = ob.person_id;
 
+-- Update missing locations
+UPDATE
+    path_zambia_etl.facility_registration_report
+    INNER JOIN openmrs.encounter
+      ON path_zambia_etl.facility_registration_report.person_id = patient_id AND openmrs.encounter.location_id IS NOT NULL AND
+         path_zambia_etl.facility_registration_report.facility_id IS NULL
+SET path_zambia_etl.facility_registration_report.facility_id = openmrs.encounter.location_id;
+
 -- Update provider name
   UPDATE path_zambia_etl.facility_registration_report prns,
 (   SELECT provider_id, person_id
