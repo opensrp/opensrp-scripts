@@ -68,7 +68,6 @@ UPDATE
     INNER JOIN openmrs.location ON path_zambia_etl.facility_encounter_report.fac_id = openmrs.location.location_id
 SET path_zambia_etl.facility_encounter_report.fac_name = (if(openmrs.location.name LIKE 'so %',
                                                              SUBSTR(openmrs.location.name, 4), openmrs.location.name));
-
 -- Update facility location for health centres
 UPDATE
     path_zambia_etl.facility_encounter_report
@@ -100,14 +99,12 @@ UPDATE
     INNER JOIN openmrs.location ON path_zambia_etl.facility_encounter_report.district_id = openmrs.location.location_id
 SET path_zambia_etl.facility_encounter_report.district_name = (if(openmrs.location.name LIKE 'so %',
                                                                   SUBSTR(openmrs.location.name, 4), openmrs.location.name));
-
 -- Update province name
 UPDATE
     path_zambia_etl.facility_encounter_report
     INNER JOIN openmrs.location ON path_zambia_etl.facility_encounter_report.province_id = openmrs.location.location_id
 SET path_zambia_etl.facility_encounter_report.province_name = (if(openmrs.location.name LIKE 'so %',
                                                                   SUBSTR(openmrs.location.name, 4), openmrs.location.name));
-
 -- Update columns
 UPDATE path_zambia_etl.facility_encounter_report cwi
 SET
@@ -273,4 +270,3 @@ WHERE child_weight IS NULL AND child_weighed AND z_score IS NULL AND BCG1 IS NUL
       PCV1 IS NULL AND Penta1 IS NULL AND Rota1 IS NULL AND OPV2 IS NULL AND PCV2 IS NULL AND Penta2 IS NULL AND
       Rota2 IS NULL AND OPV3 IS NULL AND PCV3 IS NULL AND Penta3 IS NULL AND Measles1 IS NULL AND MR1 IS NULL AND
       OPV4 IS NULL AND Measles2 IS NULL AND MR2 IS NULL AND BCG2 IS NULL AND vitamin_a IS NULL AND mebendezol IS NULL;
-
