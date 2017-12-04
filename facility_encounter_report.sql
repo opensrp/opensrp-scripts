@@ -34,6 +34,12 @@ SET path_zambia_etl.facility_encounter_report.provider_id = openmrs.encounter_pr
 DELETE FROM path_zambia_etl.facility_encounter_report
 WHERE provider_id = 1;
 
+-- update missing facility_ids
+UPDATE
+    path_zambia_etl.facility_encounter_report fl
+SET fac_id = (select location_id from openmrs.encounter where encounter_id in (select encounter_id from openmrs.encounter_provider
+where provider_id= fl.provider_id and location_id is not null order by date_created desc) limit 1) WHERE fac_id IS NULL ;
+
 -- provider name
 UPDATE
     path_zambia_etl.facility_encounter_report
