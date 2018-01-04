@@ -1,4 +1,4 @@
-﻿select client.zeir_id as "ZEIR ID",
+﻿SELECT client.zeir_id as "ZEIR ID",
         client.gender as "Gender",
    client.birth_date::timestamp::date as "DOB",
         dfs.value as "Date first seen",
@@ -37,10 +37,16 @@
           END
         ELSE 'other'
         END as "Province",
+  usr.person_id as "Provider ID",
 
-        usr.person_id as "Provider ID",
-        prv.name as "Provider name",
-        cn.name as "Place of birth",
+        CASE
+        WHEN prv.name IS NULL
+          THEN
+            CONCAT(pname.given_name,' ',pname.family_name)
+        ELSE prv.name
+        END as "Provider name",
+  
+   cn.name as "Place of birth",
 
         CASE coalesce((locfob.name),bfn.value)
         WHEN 'Other' THEN bfnl.value
@@ -50,48 +56,37 @@
           ELSE coalesce((locfob.name),bfn.value)
           END
         END as "Facility of Birth",
-
-
-
-
-        client.residential_address as "Residential area"
+   client.residential_address as "Residential area"
 
  from public.client client
-   inner join public.birth_event bev on bev.base_entity_id = client.base_entity_id
-   left join public.birth_event_obs dfs on (client.base_entity_id = dfs.base_entity_id and
+   JOIN public.birth_event bev ON bev.base_entity_id = client.base_entity_id
+   LEFT JOIN public.birth_event_obs dfs ON (client.base_entity_id = dfs.base_entity_id AND
                                             dfs.form_submission_field='First_Health_Facility_Contact')
-   left join public.birth_event_obs hmf on (client.base_entity_id = hmf.base_entity_id and
+   LEFT JOIN public.birth_event_obs hmf ON (client.base_entity_id = hmf.base_entity_id AND
                                             hmf.form_submission_field='Home_Facility')
-   left join public.birth_event_obs bfn on (client.base_entity_id = bfn.base_entity_id and
+   LEFT JOIN public.birth_event_obs bfn ON (client.base_entity_id = bfn.base_entity_id AND
                                             bfn.form_submission_field='Birth_Facility_Name')
-   left join public.birth_event_obs pob on (client.base_entity_id = pob.base_entity_id and
+   LEFT JOIN public.birth_event_obs pob ON (client.base_entity_id = pob.base_entity_id AND
                                             pob.form_submission_field='Place_Birth')
-
-   left join public.birth_event_obs bfnl on (client.base_entity_id = bfnl.base_entity_id and
+   LEFT JOIN public.birth_event_obs bfnl ON (client.base_entity_id = bfnl.base_entity_id AND
                                              bfnl.form_submission_field='Birth_Facility_Name_Other')
+   LEFT JOIN public.location loc ON loc.uuid = bev.location_id
+   LEFT JOIN public.concept_name cn ON (cn.concept_id::varchar =
+   (SELECT substring(pob.value from 0 for position('A' in pob.value))) AND cn.locale='en')
+   LEFT JOIN public.location locfob ON locfob.uuid = bfn.value
 
-   left join public.location loc on loc.uuid = bev.location_id
-   left join public.concept_name cn on (cn.concept_id::varchar =
-   (SELECT substring(pob.value from 0 for position('A' in pob.value))) and cn.locale='en')
-   left join public.location locfob on locfob.uuid = bfn.value
+   LEFT JOIN public.users usr ON LOWER(usr.username) = LOWER(bev.provider_id)
+   LEFT JOIN public.provider prv ON prv.person_id = usr.person_id
+   LEFT JOIN public.person_name pname ON pname.person_id = usr.person_id
+   LEFT JOIN public.location_tag_map ltm ON ltm.location_id = loc.location_id
+   LEFT JOIN public.location dist_four ON dist_four.location_id = loc.parent_location
+   LEFT JOIN public.location dist_five_step ON dist_five_step.location_id = dist_four.parent_location
+   LEFT JOIN public.location dist_four_prov ON dist_four_prov.location_id = dist_four.parent_location
+   LEFT JOIN public.location dist_five_step_prov ON dist_five_step_prov.location_id = dist_five_step.parent_location
 
-
-   left join public.users usr on LOWER(usr.username) = LOWER(bev.provider_id)
-
-
-   left join public.provider prv on prv.person_id = usr.person_id
-
-   left join public.location_tag_map ltm on ltm.location_id = loc.location_id
-
-   left join public.location dist_four on dist_four.location_id = loc.parent_location
-   left join public.location dist_five_step on dist_five_step.location_id = dist_four.parent_location
-
-   left join public.location dist_four_prov on dist_four_prov.location_id = dist_four.parent_location
-   left join public.location dist_five_step_prov on dist_five_step_prov.location_id = dist_five_step.parent_location
-
- group by client.zeir_id,client.gender,client.birth_date,dfs.value,client.date_created,
+ GROUP BY client.zeir_id,client.gender,client.birth_date,dfs.value,client.date_created,
    loc.location_id,loc.name,hmf.value,ltm.location_tag_id,dist_four.name,dist_five_step.name,
    dist_four_prov.name,dist_five_step_prov.name,prv.person_id,prv.name,cn.name,locfob.name,bfn.value,
-   client.residential_address,bfnl.value,usr.person_id order by client.date_created asc
+   client.residential_address,bfnl.value,usr.person_id,pname.family_name,pname.given_name ORDER BY client.date_created ASC
 
 
