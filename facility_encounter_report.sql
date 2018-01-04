@@ -23,7 +23,7 @@ INSERT INTO path_zambia_etl.facility_encounter_report (
       ON person_id = openmrs.encounter.patient_id AND openmrs.encounter.encounter_type NOT IN (1, 8) AND
          openmrs.encounter.voided = 0;
 
--- provider id
+-- update provider id
 UPDATE
     path_zambia_etl.facility_encounter_report
     INNER JOIN openmrs.encounter_provider
