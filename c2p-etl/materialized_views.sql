@@ -12,8 +12,10 @@ SELECT
 FROM public.couchdb where doc @> '{"type":"Event"}';
 
 #indexing
-CREATE INDEX i_event_base_entity_id  ON event (base_entity_id);
-CREATE INDEX i_event_event_type  ON event (event_type);
+CREATE INDEX i_event_base_entity_id ON event (base_entity_id);
+CREATE INDEX i_event_event_type ON event (event_type);
+CREATE INDEX i_event_location_id ON event (location_id);
+CREATE INDEX i_event_provider_id ON event (provider_id);
 CREATE UNIQUE INDEX ui_event_id ON event (event_id);
 
 
@@ -33,6 +35,9 @@ FROM public.couchdb where doc @> '{"type":"Event", "eventType":"Vaccination"}';
 
 #indexing
 CREATE INDEX i_vaccination_base_entity_id ON vaccination (base_entity_id);
+CREATE INDEX i_vaccination_provider_id ON vaccination (provider_id);
+CREATE INDEX i_vaccination_location_id ON vaccination (location_id);
+CREATE INDEX i_vaccination_vaccine ON vaccination (vaccine);
 CREATE UNIQUE INDEX ui_vaccination_id ON vaccination (vaccination_id);
 
 
@@ -50,6 +55,8 @@ FROM public.couchdb where doc @> '{"type":"Event", "eventType":"Growth Monitorin
 
 #indexing
 CREATE INDEX i_weight_base_entity_id ON weight (base_entity_id);
+CREATE INDEX i_weight_provider_id ON weight (provider_id);
+CREATE INDEX i_weight_location_id ON weight (location_id);
 CREATE UNIQUE INDEX ui_weight_id ON weight (weight_id);
 
 
@@ -82,8 +89,8 @@ FROM public.couchdb
 
 #indexing
 CREATE INDEX i_birth_event_obs_base_entity_id ON birth_event_obs (base_entity_id);
-CREATE INDEX i_birth_event_obs_form_submission_field  ON birth_event_obs (form_submission_field);
-CREATE INDEX i_value  ON birth_event_obs (value);
+CREATE INDEX i_birth_event_obs_form_submission_field ON birth_event_obs (form_submission_field);
+CREATE INDEX i_value ON birth_event_obs (value);
 CREATE UNIQUE INDEX ui_birth_event_obs_id ON birth_event_obs (birth_event_obs_id,form_submission_field);
 
 CREATE MATERIALIZED VIEW client AS
@@ -105,6 +112,7 @@ FROM public.couchdb where doc @> '{"type":"Client"}';
 
 #indexing
 CREATE INDEX i_client_id ON client (base_entity_id);
+CREATE INDEX i_mother_id ON client (mother);
 CREATE UNIQUE INDEX ui_client_id ON client (client_id);
 
 
@@ -123,8 +131,8 @@ SELECT
 FROM public.couchdb where doc @> '{"type":"Event", "eventType":"Recurring Service"}';
 
 #indexing
-CREATE INDEX i_recurring_service_base_entity_id ON vaccination (base_entity_id);
-CREATE UNIQUE INDEX ui_recurring_service_id ON vaccination (service_id);
-
-
-
+CREATE INDEX i_recurring_service_base_entity_id ON recurring_service (base_entity_id);
+CREATE INDEX i_recurring_service_provider_id ON recurring_service (provider_id);
+CREATE INDEX i_recurring_service_location_id ON recurring_service (location_id);
+CREATE INDEX i_recurring_service_vaccine ON recurring_service (vaccine);
+CREATE UNIQUE INDEX ui_recurring_service_id ON recurring_service (service_id);
