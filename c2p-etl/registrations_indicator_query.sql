@@ -73,8 +73,8 @@
    LEFT JOIN public.location loc ON loc.uuid = bev.location_id
    LEFT JOIN public.concept_name cn ON (cn.concept_id::varchar =
    (SELECT substring(pob.value from 0 for position('A' in pob.value))) AND cn.locale='en')
-   LEFT JOIN public.location locfob ON locfob.uuid = bfn.value
 
+   LEFT JOIN public.location locfob ON locfob.uuid = bfn.value
    LEFT JOIN public.users usr ON LOWER(usr.username) = LOWER(bev.provider_id)
    LEFT JOIN public.provider prv ON prv.person_id = usr.person_id
    LEFT JOIN public.person_name pname ON pname.person_id = usr.person_id

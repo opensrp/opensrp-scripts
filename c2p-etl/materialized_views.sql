@@ -1,4 +1,4 @@
-﻿#creating views to hold data extracted from json docs from couchDB
+﻿-- creating views to hold data extracted from json docs from couchDB
 
 CREATE MATERIALIZED VIEW event AS
 SELECT
@@ -65,6 +65,8 @@ FROM public.couchdb where doc @> '{"type":"Event", "eventType":"Birth Registrati
 
 #indexing
 CREATE INDEX i_birth_event_id ON birth_event (base_entity_id);
+CREATE INDEX i_location_id ON birth_event (location_id);
+CREATE INDEX i_provider_id ON birth_event (provider_id);
 CREATE UNIQUE INDEX ui_birth_event_id ON birth_event (birth_event_id);
 
 
@@ -81,6 +83,7 @@ FROM public.couchdb
 #indexing
 CREATE INDEX i_birth_event_obs_base_entity_id ON birth_event_obs (base_entity_id);
 CREATE INDEX i_birth_event_obs_form_submission_field  ON birth_event_obs (form_submission_field);
+CREATE INDEX i_value  ON birth_event_obs (value);
 CREATE UNIQUE INDEX ui_birth_event_obs_id ON birth_event_obs (birth_event_obs_id,form_submission_field);
 
 CREATE MATERIALIZED VIEW client AS
@@ -103,6 +106,25 @@ FROM public.couchdb where doc @> '{"type":"Client"}';
 #indexing
 CREATE INDEX i_client_id ON client (base_entity_id);
 CREATE UNIQUE INDEX ui_client_id ON client (client_id);
+
+
+CREATE MATERIALIZED VIEW recurring_service AS
+SELECT
+  doc->>'_id' as service_id,
+  doc->>'baseEntityId' as base_entity_id,
+  doc->>'eventDate' as event_date,
+  doc->>'providerId' as provider_id,
+  doc->>'locationId' as location_id,
+  doc->>'dateCreated' as date_created,
+  doc->'obs'->0->>'formSubmissionField' as vaccine,
+  doc->'obs'->0->'values'->>0 as v_date,
+  doc->'obs'->1->>'formSubmissionField' as dose,
+  doc->'obs'->1->'values'->>0 as dose_value
+FROM public.couchdb where doc @> '{"type":"Event", "eventType":"Recurring Service"}';
+
+#indexing
+CREATE INDEX i_recurring_service_base_entity_id ON vaccination (base_entity_id);
+CREATE UNIQUE INDEX ui_recurring_service_id ON vaccination (service_id);
 
 
 

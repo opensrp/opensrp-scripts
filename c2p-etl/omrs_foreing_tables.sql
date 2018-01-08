@@ -1,5 +1,5 @@
-﻿
-#creating FOREIGN TABLES to get data from openmrs for concepts, users and location this tables
+﻿-- creating FOREIGN TABLES to get data from openmrs for concepts, users and location this tables
+
 CREATE FOREIGN TABLE location (
 location_id integer,
 name varchar(255)  DEFAULT '',
