@@ -1,17 +1,17 @@
 ﻿-- creating views to hold data extracted from json docs from couchDB
 
-CREATE MATERIALIZED VIEW event AS
-SELECT
-  doc->>'_id' as event_id,
-  doc->>'baseEntityId' as base_entity_id,
-  doc->>'eventDate' as event_date,
-  doc->>'eventType' as event_type,
-  doc->>'providerId' as provider_id,
-  doc->>'locationId' as location_id,
-  doc->>'dateCreated' as date_created
-FROM public.couchdb where doc @> '{"type":"Event"}';
+  CREATE MATERIALIZED VIEW event AS
+  SELECT
+    doc->>'_id' as event_id,
+    doc->>'baseEntityId' as base_entity_id,
+    doc->>'eventDate' as event_date,
+    doc->>'eventType' as event_type,
+    doc->>'providerId' as provider_id,
+    doc->>'locationId' as location_id,
+    doc->>'dateCreated' as date_created
+  FROM public.couchdb where doc @> '{"type":"Event"}';
 
-#indexing
+-- indexing
 CREATE INDEX i_event_base_entity_id ON event (base_entity_id);
 CREATE INDEX i_event_event_type ON event (event_type);
 CREATE INDEX i_event_location_id ON event (location_id);
@@ -33,7 +33,7 @@ SELECT
   doc->'obs'->1->'values'->>0 as dose_value
 FROM public.couchdb where doc @> '{"type":"Event", "eventType":"Vaccination"}';
 
-#indexing
+-- indexing
 CREATE INDEX i_vaccination_base_entity_id ON vaccination (base_entity_id);
 CREATE INDEX i_vaccination_provider_id ON vaccination (provider_id);
 CREATE INDEX i_vaccination_location_id ON vaccination (location_id);
@@ -53,7 +53,7 @@ SELECT
   doc->'obs'->1->'values'->>0 as zscore
 FROM public.couchdb where doc @> '{"type":"Event", "eventType":"Growth Monitoring"}';
 
-#indexing
+-- indexing
 CREATE INDEX i_weight_base_entity_id ON weight (base_entity_id);
 CREATE INDEX i_weight_provider_id ON weight (provider_id);
 CREATE INDEX i_weight_location_id ON weight (location_id);
@@ -70,12 +70,11 @@ SELECT
   doc->>'dateCreated' as date_created
 FROM public.couchdb where doc @> '{"type":"Event", "eventType":"Birth Registration"}';
 
-#indexing
+-- indexing
 CREATE INDEX i_birth_event_id ON birth_event (base_entity_id);
 CREATE INDEX i_location_id ON birth_event (location_id);
 CREATE INDEX i_provider_id ON birth_event (provider_id);
 CREATE UNIQUE INDEX ui_birth_event_id ON birth_event (birth_event_id);
-
 
 
 CREATE MATERIALIZED VIEW birth_event_obs AS
@@ -87,7 +86,7 @@ SELECT
 FROM public.couchdb
   CROSS JOIN jsonb_array_elements(doc->'obs') elements WHERE doc @> '{"type":"Event", "eventType":"Birth Registration"}';
 
-#indexing
+-- indexing
 CREATE INDEX i_birth_event_obs_base_entity_id ON birth_event_obs (base_entity_id);
 CREATE INDEX i_birth_event_obs_form_submission_field ON birth_event_obs (form_submission_field);
 CREATE INDEX i_value ON birth_event_obs (value);
@@ -110,7 +109,7 @@ SELECT
   doc->'relationships'->'mother'->>0 as mother
 FROM public.couchdb where doc @> '{"type":"Client"}';
 
-#indexing
+-- indexing
 CREATE INDEX i_client_id ON client (base_entity_id);
 CREATE INDEX i_mother_id ON client (mother);
 CREATE UNIQUE INDEX ui_client_id ON client (client_id);
@@ -130,7 +129,7 @@ SELECT
   doc->'obs'->1->'values'->>0 as dose_value
 FROM public.couchdb where doc @> '{"type":"Event", "eventType":"Recurring Service"}';
 
-#indexing
+-- indexing
 CREATE INDEX i_recurring_service_base_entity_id ON recurring_service (base_entity_id);
 CREATE INDEX i_recurring_service_provider_id ON recurring_service (provider_id);
 CREATE INDEX i_recurring_service_location_id ON recurring_service (location_id);

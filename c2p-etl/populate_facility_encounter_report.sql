@@ -7,7 +7,7 @@ INSERT INTO facility_encounter_report (
   MR1,OPV4,Measles2,MR2,BCG2
 )
   SELECT
-    vacc.vaccination_id,vacc.v_date,cl.zeir_id,cl.gender,
+    vacc.vaccination_id,vacc.v_date::timestamp::date,cl.zeir_id,cl.gender,
     cl.birth_date::timestamp::date,clm.zeir_id,
     CASE
     WHEN cn.name IS NOT NULL
@@ -125,7 +125,7 @@ INSERT INTO facility_encounter_report (
   child_weighed,child_weight,z_score
 )
   SELECT
-    weight.weight_id,weight.event_date,cl.zeir_id,cl.gender,
+    weight.weight_id,weight.event_date::timestamp::date,cl.zeir_id,cl.gender,
     cl.birth_date::timestamp::date,clm.zeir_id,
     CASE
     WHEN cn.name IS NOT NULL
@@ -229,7 +229,7 @@ INSERT INTO facility_encounter_report (
 )
 
   SELECT
-    rs.service_id,rs.event_date,cl.zeir_id,cl.gender,cl.birth_date::timestamp::date,clm.zeir_id,
+    rs.service_id,rs.event_date::timestamp::date,cl.zeir_id,cl.gender,cl.birth_date::timestamp::date,clm.zeir_id,
     CASE
     WHEN cn.name IS NOT NULL
       THEN
@@ -323,3 +323,11 @@ INSERT INTO facility_encounter_report (
     dist_five_step.location_id,dist_four.name,dist_five_step.name,dist_four_prov.location_id,
     dist_four_prov.name,dist_five_step_prov.location_id,dist_five_step_prov.name,usr.person_id,
     prv.name,pname.given_name,pname.family_name,rs.vaccine;
+
+
+-- Clean up unused encounter rows
+DELETE FROM facility_encounter_report
+WHERE child_weight IS NULL AND child_weighed IS NOT NULL AND z_score IS NULL AND BCG1 IS NULL AND OPV0 IS NULL AND OPV1 IS NULL AND
+      PCV1 IS NULL AND Penta1 IS NULL AND Rota1 IS NULL AND OPV2 IS NULL AND PCV2 IS NULL AND Penta2 IS NULL AND
+      Rota2 IS NULL AND OPV3 IS NULL AND PCV3 IS NULL AND Penta3 IS NULL AND Measles1 IS NULL AND MR1 IS NULL AND
+      OPV4 IS NULL AND Measles2 IS NULL AND MR2 IS NULL AND BCG2 IS NULL AND vitamin_a IS NULL AND mebendezol IS NULL;
