@@ -8,7 +8,7 @@ INSERT INTO facility_encounter_report (
 )
   SELECT
     vacc.vaccination_id,vacc.v_date::timestamp::date,cl.zeir_id,cl.gender,
-    cl.birth_date::timestamp::date,clm.zeir_id,
+    cl.birth_date::timestamp::date,clm.gender,
     CASE
     WHEN cn.name IS NOT NULL
       THEN
@@ -114,7 +114,7 @@ INSERT INTO facility_encounter_report (
     LEFT JOIN public.users usr ON LOWER(usr.username) = LOWER(vacc.provider_id)
     LEFT JOIN public.provider prv ON prv.person_id = usr.person_id
     LEFT JOIN public.person_name pname ON pname.person_id = usr.person_id
-  GROUP BY vacc.vaccination_id,vacc.v_date,cl.zeir_id,cl.gender,cl.birth_date,clm.zeir_id,cn.name,loc.location_id,loc.name,
+  GROUP BY vacc.vaccination_id,vacc.v_date,cl.zeir_id,cl.gender,cl.birth_date,clm.gender,cn.name,loc.location_id,loc.name,
     ltm.location_tag_id,dist_four.location_id,dist_five_step.location_id,dist_four.name,dist_five_step.name,dist_four_prov.location_id,
     dist_four_prov.name,dist_five_step_prov.location_id,dist_five_step_prov.name,usr.person_id,prv.name,pname.given_name,pname.family_name,vacc.vaccine;
 
@@ -126,7 +126,7 @@ INSERT INTO facility_encounter_report (
 )
   SELECT
     weight.weight_id,weight.event_date::timestamp::date,cl.zeir_id,cl.gender,
-    cl.birth_date::timestamp::date,clm.zeir_id,
+    cl.birth_date::timestamp::date,clm.gender,
     CASE
     WHEN cn.name IS NOT NULL
       THEN
@@ -216,7 +216,7 @@ INSERT INTO facility_encounter_report (
     LEFT JOIN public.provider prv ON prv.person_id = usr.person_id
     LEFT JOIN public.person_name pname ON pname.person_id = usr.person_id
   GROUP BY weight.weight_id,weight.event_date,cl.zeir_id,cl.gender,cl.birth_date,
-    clm.zeir_id,cn.name,loc.location_id,loc.name,ltm.location_tag_id,dist_four.location_id,
+    clm.gender,cn.name,loc.location_id,loc.name,ltm.location_tag_id,dist_four.location_id,
     dist_five_step.location_id,dist_four.name,dist_five_step.name,dist_four_prov.location_id,
     dist_four_prov.name,dist_five_step_prov.location_id,dist_five_step_prov.name,usr.person_id,
     prv.name,pname.given_name,pname.family_name,weight.weight,weight.zscore;
@@ -229,7 +229,7 @@ INSERT INTO facility_encounter_report (
 )
 
   SELECT
-    rs.service_id,rs.event_date::timestamp::date,cl.zeir_id,cl.gender,cl.birth_date::timestamp::date,clm.zeir_id,
+    rs.service_id,rs.event_date::timestamp::date,cl.zeir_id,cl.gender,cl.birth_date::timestamp::date,clm.gender,
     CASE
     WHEN cn.name IS NOT NULL
       THEN
@@ -318,7 +318,7 @@ INSERT INTO facility_encounter_report (
     LEFT JOIN public.provider prv ON prv.person_id = usr.person_id
     LEFT JOIN public.person_name pname ON pname.person_id = usr.person_id
 
-  GROUP BY rs.service_id,rs.event_date,cl.zeir_id,cl.gender,cl.birth_date,clm.zeir_id,
+  GROUP BY rs.service_id,rs.event_date,cl.zeir_id,cl.gender,cl.birth_date,clm.gender,
     cn.name,loc.location_id,loc.name,ltm.location_tag_id,dist_four.location_id,
     dist_five_step.location_id,dist_four.name,dist_five_step.name,dist_four_prov.location_id,
     dist_four_prov.name,dist_five_step_prov.location_id,dist_five_step_prov.name,usr.person_id,

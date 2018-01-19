@@ -135,3 +135,23 @@ CREATE INDEX i_recurring_service_provider_id ON recurring_service (provider_id);
 CREATE INDEX i_recurring_service_location_id ON recurring_service (location_id);
 CREATE INDEX i_recurring_service_vaccine ON recurring_service (vaccine);
 CREATE UNIQUE INDEX ui_recurring_service_id ON recurring_service (service_id);
+
+
+CREATE MATERIALIZED VIEW stock AS
+SELECT
+  doc->>'_id' as event_id,
+  doc->>'identifier' as identifier,
+  doc->>'vaccine_type_id' as vaccine_type_id,
+  doc->>'transaction_type' as transaction_type,
+  doc->>'providerid' as providerid,
+  doc->>'value' as value,
+  doc->>'date_created' as date_created,
+  doc->>'to_from' as to_from
+FROM public.couchdb where doc @> '{"type":"Stock"}';
+
+-- indexing
+CREATE INDEX i_stock_identifier ON stock (identifier);
+CREATE INDEX i_stock_vaccine_type_id ON stock (vaccine_type_id);
+CREATE INDEX i_stock_transaction_type ON stock (transaction_type);
+CREATE INDEX i_stock_providerid ON stock (providerid);
+CREATE UNIQUE INDEX ui_stock_id ON stock (event_id);

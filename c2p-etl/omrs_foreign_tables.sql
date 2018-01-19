@@ -118,3 +118,32 @@ date_changed varchar(50),
 uuid char(38))
 SERVER mysql_server
 OPTIONS (dbname 'openmrs', table_name 'person_name');
+
+
+CREATE FOREIGN TABLE member_location (
+  team_member_id INTEGER,
+  location_id INTEGER)
+  SERVER mysql_server
+  OPTIONS (dbname 'openmrs', table_name 'member_location');
+
+
+CREATE FOREIGN TABLE team_member (
+  team_member_id INTEGER,
+  identifier varchar(45),
+  team_id INTEGER,
+  person_id INTEGER,
+  join_date VARCHAR(20),
+  leave_date VARCHAR(20),
+  is_team_lead SMALLINT,
+  date_created VARCHAR(20),
+  creator INTEGER,
+  changed_by INTEGER,
+  date_changed VARCHAR(20),
+  voided SMALLINT,
+  voided_by INTEGER,
+  date_voided VARCHAR(20),
+  void_reason varchar(255),
+  uuid varchar(255))
+  SERVER mysql_server
+  OPTIONS (dbname 'openmrs', table_name 'team_member');
+
