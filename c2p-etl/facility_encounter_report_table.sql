@@ -65,8 +65,3 @@ CREATE TABLE facility_registration_report (
 );
 
 
-﻿CREATE TABLE facility_registration_report (
-  zeir_id,gender,dob,date_first_seen,timestamp_of_registration,facility_id,
-  facility_tag_id,district,province,facility_name,provider_id,provider_name,
-  place_of_birth,health_facility,residential_area,hiv_exposure
-);

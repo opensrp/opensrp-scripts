@@ -17,8 +17,8 @@ generateRegistrationEtl() {
 
   mkdir -p $report_folder
   find $report_folder -mtime +$reportLife -exec rm {} \;
-  psql -h localhost -d opensrp -U $mysqlUser -W$mysqlPassword  -f ./registrations_indicator_query.sql
-  psql -h localhost -d opensrp -U $mysqlUser -W$mysqlPassword  -f ./facility_registration_query.sql | sed  's/\t/,/g' > $sourceFile
+  psql -h localhost -d opensrp -U $mysqlUser -f ./registrations_indicator_query.sql
+  psql -h localhost -d opensrp -U $mysqlUser -f ./facility_registration_query.sql | sed  's/\t/,/g' > $sourceFile
 
  # /usr/bin/aws s3 sync $report_folder s3://opensrp/reports/etl --acl public-read --delete
 
