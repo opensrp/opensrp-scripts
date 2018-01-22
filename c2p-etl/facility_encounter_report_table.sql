@@ -47,7 +47,7 @@ CREATE TABLE facility_encounter_report (
 -- Create facility_registration_report table to hold the different registrations
 ﻿DROP TABLE IF EXISTS facility_registration_report;
 CREATE TABLE facility_registration_report (
-  zeir_id varchar(45) DEFAULT NULL,
+  zeir_id varchar(100) DEFAULT NULL,
   gender varchar(10) DEFAULT NULL,
   dob varchar(40) DEFAULT NULL,
   date_first_seen varchar(40) DEFAULT NULL,

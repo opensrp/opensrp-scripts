@@ -1,5 +1,5 @@
 ﻿SELECT
-   encounter_id  AS "Encounter ID",
+﻿ ROW_NUMBER () OVER (ORDER BY encounter_id) AS "Encounter ID",
    encounter_date     AS "Encounter Date",
    zeir_id            AS "ZEIR ID",
    gender             AS "Gender",
@@ -14,6 +14,7 @@
   province_name AS "Province Name",
   provider_id   AS "Provider ID",
   provider_name AS "Provider Name",
+﻿﻿DENSE_RANK() OVER(ORDER BY encounter_date,zeir_id,fac_id,provider_id) AS "Visit ID",
    child_weighed      AS " Child Weighed",
    child_weight       AS "Child Weight",
   z_score       AS "Z-score",
@@ -38,4 +39,4 @@
    BCG2,
    vitamin_a          AS "Vitamin A",
    mebendezol         AS "Mebendezol"
- FROM facility_encounter_report
+ FROM facility_encounter_report;

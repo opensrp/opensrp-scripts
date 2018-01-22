@@ -5,15 +5,15 @@ INSERT INTO facility_registration_report (
   zeir_id,gender,dob,date_first_seen,timestamp_of_registration,facility_id,facility_name,provider_id,provider_name,
   place_of_birth,health_facility,residential_area
 )
-  SELECT DISTINCT (client.zeir_id),
-    client.gender,
-    client.birth_date,
-    dfs.value,
-    client.date_created,
+  SELECT DISTINCT ON (client.zeir_id) zeir_id,
+client.gender,
+client.birth_date,
+dfs.value,
+client.date_created,
 
-    coalesce((loc.location_id),tl.location_id),
+coalesce((loc.location_id),tl.location_id),
 
-    CASE WHEN coalesce((loc.name),tln.name) SIMILAR TO 'so %|we %'
+CASE WHEN coalesce((loc.name),tln.name) SIMILAR TO 'so %|we %'
 THEN substring(coalesce((loc.name),tln.name) from 4)
 ELSE coalesce((loc.name),tln.name)
 END as "Facility of registration name",
@@ -64,9 +64,10 @@ LEFT JOIN public.team_member tm ON tm.person_id = usr.person_id
 LEFT JOIN public.member_location tl ON tl.team_member_id = tm.team_member_id
 LEFT JOIN public.location tln ON tln.location_id = tl.location_id
 LEFT JOIN public.location_tag_map ltm ON ltm.location_id = coalesce((loc.location_id),tl.location_id)
+where usr.username <> 'biddemo'
 GROUP BY client.zeir_id,client.gender,client.birth_date,dfs.value,client.date_created,bev.provider_id,tln.name,
 loc.location_id,loc.name,hmf.value,ltm.location_tag_id,prv.person_id,prv.name,cn.name,locfob.name,bfn.value,tl.location_id,
-client.residential_address,bfnl.value,usr.person_id,pname.family_name,pname.given_name ORDER BY client.date_created ASC;
+client.residential_address,bfnl.value,usr.person_id,pname.family_name,pname.given_name;
 
 
 UPDATE

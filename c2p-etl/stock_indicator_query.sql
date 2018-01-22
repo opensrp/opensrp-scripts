@@ -1,5 +1,4 @@
-﻿﻿
-select  to_timestamp (client.date_created::BIGINT / 1000) at time zone 'Africa/Harare' as "Date",
+﻿select  to_timestamp (client.date_created::BIGINT / 1000) at time zone 'Africa/Harare' as "Date",
 
 
 
@@ -23,7 +22,7 @@ select  to_timestamp (client.date_created::BIGINT / 1000) at time zone 'Africa/H
           END
         ELSE  prv.name END
           as "Provider name",
-        transaction_type as "Transaction Type",
+
 
   CASE WHEN tln.name SIMILAR TO 'so %|we %'
 THEN substring(tln.name from 4)
@@ -44,6 +43,6 @@ LEFT JOIN public.person_name pname ON pname.person_id = usr.person_id
 LEFT JOIN public.team_member tm ON tm.person_id = usr.person_id and tm.voided =0
 LEFT JOIN public.member_location tl ON tl.team_member_id = tm.team_member_id
 LEFT JOIN public.location tln ON tln.location_id = tl.location_id
-where providerid <> 'biddemo'
+where usr.username <> 'biddemo'
 GROUP BY client.date_created,vaccine_type_id,usr.person_id,prv.name,pname.given_name,
 pname.family_name,client.transaction_type,tln.name,client.to_from

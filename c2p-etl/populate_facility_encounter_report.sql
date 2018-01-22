@@ -114,6 +114,7 @@ INSERT INTO facility_encounter_report (
     LEFT JOIN public.users usr ON LOWER(usr.username) = LOWER(vacc.provider_id)
     LEFT JOIN public.provider prv ON prv.person_id = usr.person_id
     LEFT JOIN public.person_name pname ON pname.person_id = usr.person_id
+  where usr.username <> 'biddemo'
   GROUP BY vacc.vaccination_id,vacc.v_date,cl.zeir_id,cl.gender,cl.birth_date,clm.gender,cn.name,loc.location_id,loc.name,
     ltm.location_tag_id,dist_four.location_id,dist_five_step.location_id,dist_four.name,dist_five_step.name,dist_four_prov.location_id,
     dist_four_prov.name,dist_five_step_prov.location_id,dist_five_step_prov.name,usr.person_id,prv.name,pname.given_name,pname.family_name,vacc.vaccine;
@@ -215,6 +216,7 @@ INSERT INTO facility_encounter_report (
     LEFT JOIN public.users usr ON LOWER(usr.username) = LOWER(weight.provider_id)
     LEFT JOIN public.provider prv ON prv.person_id = usr.person_id
     LEFT JOIN public.person_name pname ON pname.person_id = usr.person_id
+  where usr.username <> 'biddemo'
   GROUP BY weight.weight_id,weight.event_date,cl.zeir_id,cl.gender,cl.birth_date,
     clm.gender,cn.name,loc.location_id,loc.name,ltm.location_tag_id,dist_four.location_id,
     dist_five_step.location_id,dist_four.name,dist_five_step.name,dist_four_prov.location_id,
@@ -317,7 +319,7 @@ INSERT INTO facility_encounter_report (
     LEFT JOIN public.users usr ON LOWER(usr.username) = LOWER(rs.provider_id)
     LEFT JOIN public.provider prv ON prv.person_id = usr.person_id
     LEFT JOIN public.person_name pname ON pname.person_id = usr.person_id
-
+  where usr.username <> 'biddemo'
   GROUP BY rs.service_id,rs.event_date,cl.zeir_id,cl.gender,cl.birth_date,clm.gender,
     cn.name,loc.location_id,loc.name,ltm.location_tag_id,dist_four.location_id,
     dist_five_step.location_id,dist_four.name,dist_five_step.name,dist_four_prov.location_id,
