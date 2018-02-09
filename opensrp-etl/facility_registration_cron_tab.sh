@@ -17,7 +17,7 @@ generateRegistrationEtl() {
 
   mkdir -p $report_folder
   find $report_folder -mtime +$reportLife -exec rm {} \;
-  export PGPASSWORD="bH7wnMRh3DATR7Vb"
+  export PGPASSWORD="XXXX"
   psql -h localhost -d opensrp -U $mysqlUser -f ./registrations_indicator_query.sql
   psql -h localhost -d opensrp -U $mysqlUser -f ./facility_registration_query.sql | sed  's/\t/,/g' > $sourceFile
   unset PGPASSWORD

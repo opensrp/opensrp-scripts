@@ -17,7 +17,7 @@ generateEncounterEtl() {
 
   mkdir -p $report_folder
   find $report_folder -mtime +$reportLife -exec rm {} \;
-  export PGPASSWORD="bH7wnMRh3DATR7Vb"
+  export PGPASSWORD="XXXX"
   psql -h localhost -d opensrp -U $mysqlUser -f ./populate_facility_encounter_report.sql
   psql -h localhost -d opensrp -U $mysqlUser -f /opt/zeir-app/registrations_indicator_query.sql | sed  's/\t/,/g' > $sourceFile
   unset PGPASSWORD
