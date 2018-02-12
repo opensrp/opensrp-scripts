@@ -22,12 +22,12 @@ generateRegistrationEtl() {
   psql -h localhost -d opensrp -U $mysqlUser -f ./facility_registration_query.sql | sed  's/\t/,/g' > $sourceFile
   unset PGPASSWORD
 
- # /usr/bin/aws s3 sync $report_folder s3://opensrp/reports/etl --acl public-read --delete
+  /usr/bin/aws s3 sync $report_folder s3://opensrp/reports/etl --acl public-read --delete
 
 
- # if [ -z ${slackChannel+x} ]; then echo "Not sending URL to Slack"; else
- #   /usr/bin/curl -F username="PATH Zambia ETL" -F text="https://s3.amazonaws.com/opensrp/reports/$destinationFile" -F channel=$slackChannel -F token="$slackToken" https://slack.com/api/chat.postMessage;
- # fi
+  if [ -z ${slackChannel+x} ]; then echo "Not sending URL to Slack"; else
+    /usr/bin/curl -F username="PATH Zambia ETL" -F text="https://s3.amazonaws.com/opensrp/reports/$destinationFile" -F channel=$slackChannel -F token="$slackToken" https://slack.com/api/chat.postMessage;
+  fi
 }
 
 generateRegistrationEtl $1 $2 $3 $4 $5 $6
