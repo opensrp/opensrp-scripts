@@ -6,12 +6,14 @@ CREATE MATERIALIZED VIEW event AS
   SELECT
     doc->>'_id' as event_id,
     doc->>'serverVersion' as server_version,
+    doc->>'formSubmissionId' as form_submission_id,
     doc->>'baseEntityId' as base_entity_id,
     doc->>'eventDate' as event_date,
     doc->>'eventType' as event_type,
     doc->>'providerId' as provider_id,
     doc->>'locationId' as location_id,
-    doc->>'dateCreated' as date_created
+    doc->>'dateCreated' as date_created,
+    doc->'identifiers'->>'OPENMRS_UUID' as uuid
   FROM public.couchdb where doc @> '{"type":"Event"}';
 -- indexing event view
 CREATE INDEX i_event_server_version ON event (server_version);
@@ -66,7 +68,7 @@ SELECT
   doc->>'providerId' as provider_id,
   doc->>'locationId' as location_id,
   doc->>'dateCreated' as date_created
-FROM public.couchdb where doc @> '{"type":"Event", "eventType":"Vaccination"}';
+FROM public.couchdb where doc @> '{"eventType":"Vaccination"}' OR doc @> '{"eventType":"Out of Area Service - Vaccination"}';
 -- indexing vaccination events
 CREATE INDEX i_vaccination_vaccination_id ON vaccination (vaccination_id);
 CREATE INDEX i_vaccination_base_entity_id ON vaccination (base_entity_id);
@@ -82,7 +84,7 @@ SELECT
   elements ->> 'formSubmissionField' as form_submission_field,
   (elements.value -> 'values'::text) ->> 0 AS value
 FROM public.couchdb
-  CROSS JOIN jsonb_array_elements(doc->'obs') elements WHERE doc @> '{"type":"Event", "eventType":"Vaccination"}';
+  CROSS JOIN jsonb_array_elements(doc->'obs') elements WHERE doc @> '{"eventType":"Vaccination"}' OR doc @> '{"eventType":"Out of Area Service - Vaccination"}';
 -- indexing vaccination events obs
 CREATE INDEX i_vaccination_obs_id ON vaccination_obs (vaccination_obs_id);
 CREATE INDEX i_vaccination_obs_form_submission_field ON vaccination_obs (form_submission_field);
@@ -99,7 +101,7 @@ SELECT
   doc->>'providerId' as provider_id,
   doc->>'locationId' as location_id,
   doc->>'dateCreated' as date_created
-FROM public.couchdb where doc @> '{"type":"Event", "eventType":"Growth Monitoring"}';
+FROM public.couchdb where doc @> '{"eventType":"Growth Monitoring"}' OR doc @> '{"eventType":"Out of Area Service - Growth Monitoring"}';
 -- indexing weight events
 CREATE INDEX i_growth_monitoring_id ON growth_monitoring (growth_monitoring_id);
 CREATE INDEX i_growth_monitoring_base_entity_id ON growth_monitoring (base_entity_id);
@@ -115,7 +117,7 @@ SELECT
   elements ->> 'formSubmissionField' as form_submission_field,
   (elements.value -> 'values'::text) ->> 0 AS value
 FROM public.couchdb
-  CROSS JOIN jsonb_array_elements(doc->'obs') elements WHERE doc @> '{"type":"Event", "eventType":"Growth Monitoring"}';
+  CROSS JOIN jsonb_array_elements(doc->'obs') elements WHERE doc @> '{"eventType":"Growth Monitoring"}' OR doc @> '{"eventType":"Out of Area Service - Growth Monitoring"}';
 -- indexing vaccination events obs
 CREATE INDEX i_growth_monitoring_obs_id ON growth_monitoring_obs (growth_monitoring_obs_id);
 CREATE INDEX i_growth_monitoring_obs_form_submission_field ON growth_monitoring_obs (form_submission_field);
@@ -164,6 +166,8 @@ SELECT
   doc->>'baseEntityId' as base_entity_id,
   doc->>'dateCreated' as date_created,
   doc->'identifiers'->>'ZEIR_ID' as zeir_id,
+  doc->'identifiers'->>'EPI ID' as epi_id,
+  doc->'identifiers'->>'Program Client ID' as program_client_id,
   doc->'identifiers'->>'M_ZEIR_ID' as m_zeir_id,
   doc->>'firstName' as first_name,
   doc->>'middleName' as middle_name,
@@ -183,3 +187,72 @@ CREATE INDEX i_death_date ON client (death_date);
 CREATE INDEX i_mother_id ON client (mother);
 CREATE UNIQUE INDEX ui_client_id ON client (client_id);
 
+-- creating view for only Death events
+DROP MATERIALIZED VIEW IF EXISTS death_event;
+CREATE MATERIALIZED VIEW death_event AS
+SELECT
+  doc->>'_id' as death_event_id,
+  doc->>'baseEntityId' as base_entity_id,
+  doc->>'eventDate' as event_date,
+  doc->>'providerId' as provider_id,
+  doc->>'locationId' as location_id,
+  doc->>'dateCreated' as date_created
+FROM public.couchdb where doc @> '{"type":"Event", "eventType":"Death"}';
+-- indexing Death events
+CREATE INDEX i_death_event_id ON death_event (death_event_id);
+CREATE INDEX i_death_event_base_entity_id ON death_event (base_entity_id);
+CREATE INDEX i_death_event_location_id ON death_event (location_id);
+CREATE INDEX i_death_event_provider_id ON death_event (provider_id);
+CREATE UNIQUE INDEX ui_death_event_id ON death_event (death_event_id);
+
+-- creating view for Death_event_obs
+DROP MATERIALIZED VIEW IF EXISTS death_event_obs;
+CREATE MATERIALIZED VIEW death_event_obs AS
+SELECT
+  doc->>'_id' as death_event_obs_id,
+  doc->> 'baseEntityId' as base_entity_id,
+  elements ->> 'formSubmissionField' as form_submission_field,
+  elements -> 'values'->>0 as value
+FROM public.couchdb
+  CROSS JOIN jsonb_array_elements(doc->'obs') elements WHERE doc @> '{"type":"Event", "eventType":"Death"}';
+-- indexing death_event_obs
+CREATE INDEX i_death_event_obs_id ON death_event_obs (death_event_obs_id);
+CREATE INDEX i_death_event_obs_base_entity ON death_event_obs (base_entity_id);
+CREATE INDEX i_death_event_obs_form_submission_field ON death_event_obs (form_submission_field);
+CREATE INDEX i_death_event_value ON death_event_obs (value);
+CREATE UNIQUE INDEX ui_death_event_obs_id ON death_event_obs (death_event_obs_id,form_submission_field);
+
+-- creating view for only AEFI events
+DROP MATERIALIZED VIEW IF EXISTS AEFI_event;
+CREATE MATERIALIZED VIEW AEFI_event AS
+SELECT
+  doc->>'_id' as AEFI_event_id,
+  doc->>'baseEntityId' as base_entity_id,
+  doc->>'eventDate' as event_date,
+  doc->>'providerId' as provider_id,
+  doc->>'locationId' as location_id,
+  doc->>'dateCreated' as date_created
+FROM public.couchdb where doc @> '{"type":"Event", "eventType":"AEFI"}';
+-- indexing AEFI events
+CREATE INDEX i_AEFI_event_id ON AEFI_event (AEFI_event_id);
+CREATE INDEX i_AEFI_base_entity_id ON AEFI_event (base_entity_id);
+CREATE INDEX i_AEFI_location_id ON AEFI_event (location_id);
+CREATE INDEX i_AEFI_provider_id ON AEFI_event (provider_id);
+CREATE UNIQUE INDEX ui_AEFI_event_id ON AEFI_event (AEFI_event_id);
+
+-- creating view for AEFI_event_obs
+DROP MATERIALIZED VIEW IF EXISTS AEFI_event_obs;
+CREATE MATERIALIZED VIEW AEFI_event_obs AS
+SELECT
+  doc->>'_id' as AEFI_event_obs_id,
+  doc->> 'baseEntityId' as base_entity_id,
+  elements ->> 'formSubmissionField' as form_submission_field,
+  elements -> 'values'->>0 as value
+FROM public.couchdb
+  CROSS JOIN jsonb_array_elements(doc->'obs') elements WHERE doc @> '{"type":"Event", "eventType":"AEFI"}';
+-- indexing AEFI_event_obs
+CREATE INDEX i_AEFI_event_obs_id ON AEFI_event_obs (AEFI_event_obs_id);
+CREATE INDEX i_AEFI_event_obs_base_entity_id ON AEFI_event_obs (base_entity_id);
+CREATE INDEX i_AEFI_event_obs_form_submission_field ON AEFI_event_obs (form_submission_field);
+CREATE INDEX i_AEFI_value ON AEFI_event_obs (value);
+CREATE UNIQUE INDEX ui_AEFI_event_obs_id ON AEFI_event_obs (AEFI_event_obs_id,form_submission_field);

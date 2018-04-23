@@ -19,7 +19,5 @@
   place_of_birth            AS "Place of birth",
   health_facility           AS "Facility of Birth",
   residential_area          AS "Residential area"
-FROM facility_registration_report
-ORDER BY timestamp_of_registration DESC;
-
-
+FROM birth_registration
+ORDER BY timestamp_of_registration DESC
