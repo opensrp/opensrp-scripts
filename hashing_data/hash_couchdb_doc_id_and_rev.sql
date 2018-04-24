@@ -1,4 +1,7 @@
-DO $$
+ UPDATE couchdb SET doc=jsonb_set( jsonb_set(doc,'{_rev}','"1-version"',FALSE ),
+                                        '{_id}',concat('"',md5(doc->>'_id'),'"')::jsonb,FALSE );
+
+/*DO $$
   DECLARE documents_cursor CURSOR FOR
   SELECT * from couchdb;
   rec RECORD;
@@ -15,4 +18,4 @@ BEGIN
     END LOOP;
     CLOSE documents_cursor;
 END;
-$$
+$$*/
