@@ -7,7 +7,7 @@ INSERT INTO ec_encounter (
 )
   SELECT
     gm.EVENT_DATE :: TIMESTAMP :: DATE,
-    cl.zeir_id,
+    coalesce(cl.zeir_id,cl.base_entity_id),
     cl.gender,
     cl.BIRTH_DATE :: TIMESTAMP :: DATE,
     clm.m_zeir_id,
@@ -46,7 +46,7 @@ INSERT INTO ec_encounter (
 )
   SELECT
     vac.EVENT_DATE :: TIMESTAMP :: DATE,
-    cl.zeir_id,
+    coalesce(cl.zeir_id,cl.base_entity_id),
     cl.gender,
     cl.BIRTH_DATE :: TIMESTAMP :: DATE,
     clm.m_zeir_id,
@@ -112,7 +112,7 @@ INSERT INTO ec_encounter (
 )
 SELECT
   rs.EVENT_DATE :: TIMESTAMP :: DATE,
-  cl.zeir_id,
+  coalesce(cl.zeir_id,cl.base_entity_id),
   cl.gender,
   cl.BIRTH_DATE :: TIMESTAMP :: DATE,
   clm.m_zeir_id,
@@ -147,7 +147,7 @@ DELETE FROM ec_encounter
 WHERE (child_weight IS NULL AND z_score IS NULL AND BCG1 IS NULL AND OPV0 IS NULL AND OPV1 IS NULL AND Penta1 IS NULL AND
       Rota1 IS NULL AND OPV2 IS NULL AND PCV2 IS NULL AND Penta2 IS NULL AND Rota2 IS NULL AND OPV3 IS NULL AND
       PCV3 IS NULL AND Penta3 IS NULL AND Measles1 IS NULL AND MR1 IS NULL AND OPV4 IS NULL AND Measles2 IS NULL AND
-      MR2 IS NULL AND BCG2 IS NULL AND vitamin_a IS NULL AND mebendezol IS NULL AND ITN IS NULL) OR zeir_id IS NULL OR provider_id = '2';
+      MR2 IS NULL AND BCG2 IS NULL AND vitamin_a IS NULL AND mebendezol IS NULL AND ITN IS NULL) OR zeir_id ISNULL OR provider_id = '2';
 
 
 -- RUN UPDATES FOR LOCATION/NAMES
@@ -238,10 +238,10 @@ INSERT INTO facility_encounters(
   pentavalent_2,rota_2,opv_3,pcv_3,pentavalent_3,measles_1,mr_1,opv_4,measles_2,mr_2,bcg_2,vitamin_a,mebendezol,itn
 )
     SELECT
-    encounter_date::DATE,zeir_id,gender,dob,mother_id,child_hiv_expo,fac_name,district_name,province_name,provider_name,
+    encounter_date::DATE, zeir_id ,gender,dob,mother_id,child_hiv_expo,fac_name,district_name,province_name,provider_name,
     DENSE_RANK() OVER(ORDER BY encounter_date,zeir_id,provider_id),
     child_weighed,child_weight,z_score,BCG1,OPV0,OPV1,PCV1,Penta1,Rota1,OPV2,PCV2,Penta2,Rota2,
     OPV3,PCV3,Penta3,Measles1,MR1,OPV4,Measles2,MR2,BCG2,vitamin_a,mebendezol,ITN FROM ec_encounter
-GROUP BY encounter_date,zeir_id,gender,dob,mother_id,child_hiv_expo,fac_name,district_name,province_name,provider_id,provider_name,
+GROUP BY encounter_date,zeir_id, base_entity_id,gender,dob,mother_id,child_hiv_expo,fac_name,district_name,province_name,provider_id,provider_name,
     child_weighed,child_weight,z_score,BCG1,OPV0,OPV1,PCV1,Penta1,Rota1,OPV2,PCV2,Penta2,Rota2,
     OPV3,PCV3,Penta3,Measles1,MR1,OPV4,Measles2,MR2,BCG2,vitamin_a,mebendezol,ITN;

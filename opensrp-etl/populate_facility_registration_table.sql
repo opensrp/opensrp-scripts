@@ -1,15 +1,25 @@
-﻿-- Truncate the facility_registration_report flat table for new extract
-TRUNCATE TABLE facility_registration_report;
-INSERT INTO facility_registration_report (
-  zeir_id, gender, dob, date_first_seen, timestamp_of_registration, facility_id, facility_name, provider_id, provider_name,
-  place_of_birth, health_facility, residential_area
+﻿-- Truncate the birth_registration flat table for new extract
+TRUNCATE TABLE birth_registration;
+INSERT INTO birth_registration (
+  zeir_id,
+  gender,
+  date_of_birth,
+  date_first_seen,
+  timestamp_of_registration,
+  facility_id,
+  facility_name,
+  provider_id,
+  provider_name,
+  place_of_birth,
+  facility_of_birth,
+  residential_area
 )
   SELECT DISTINCT ON (CLIENT.zeir_id)
     zeir_id,
     CLIENT.gender,
-    CLIENT.birth_date :: TIMESTAMP :: DATE,
-    dfs.value,
-    CLIENT.date_created :: TIMESTAMP(0),
+    to_date(to_char(CLIENT.birth_date :: TIMESTAMP :: DATE, 'YYYY-MM-DD'), 'YYYY-MM-DD'),
+    to_date(to_char(dfs.value :: TIMESTAMP :: DATE, 'YYYY-MM-DD'), 'YYYY-MM-DD'),
+    CLIENT.date_created :: TIMESTAMP,
     COALESCE((loc.location_id), tl.location_id),
     CASE WHEN COALESCE((loc.name), tln.name) SIMILAR TO 'so %|we %'
       THEN substring(COALESCE((loc.name), tln.name) FROM 4)
@@ -57,39 +67,48 @@ INSERT INTO facility_registration_report (
     LEFT JOIN public.location tln ON tln.location_id = tl.location_id
     LEFT JOIN public.location_tag_map ltm ON ltm.location_id = COALESCE((loc.location_id), tl.location_id)
   WHERE usr.username <> 'biddemo';
+
 UPDATE
-  facility_registration_report frr
+  birth_registration frr
 SET
   facility_tag_id = location_tag_id
 FROM location_tag_map aa
 WHERE (aa.location_id = frr.facility_id AND location_tag_id = 4);
 UPDATE
-  facility_registration_report frr
+  birth_registration frr
 SET
   facility_tag_id = location_tag_id
 FROM location_tag_map aa
 WHERE (aa.location_id = frr.facility_id AND location_tag_id = 5);
 UPDATE
-  facility_registration_report frr
+  birth_registration frr
 SET district = loc.parent_location
 FROM location loc
 WHERE loc.location_id = frr.facility_id;
 UPDATE
-  facility_registration_report frr
+  birth_registration frr
 SET
   district = loc.parent_location
 FROM location loc
 WHERE loc.location_id = frr.district :: INTEGER AND facility_tag_id = 5;
+
 UPDATE
-  facility_registration_report frr
+  birth_registration frr
 SET
-  district = loc.name,
+  district = (CASE WHEN loc.name SIMILAR TO 'so %|we %'
+    THEN substring(loc.name FROM 4)
+              ELSE loc.name
+              END),
   province = loc.parent_location
 FROM location loc
 WHERE loc.location_id = frr.district :: INTEGER;
 UPDATE
-  facility_registration_report frr
+  birth_registration frr
 SET
-  province = loc.name
+  province =
+  (CASE WHEN loc.name SIMILAR TO 'so %|we %'
+    THEN substring(loc.name FROM 4)
+   ELSE loc.name
+   END)
 FROM location loc
 WHERE loc.location_id = frr.province :: INTEGER;
