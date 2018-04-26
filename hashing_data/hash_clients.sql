@@ -3,9 +3,9 @@ DECLARE
   --generated random hashed data
   DECLARE clients_cursor CURSOR FOR
   select  m.id cm_id,c.id c_id,fn.name first_name,ln.name last_name,
-  date '2014-01-10' +
+  to_char(date '2014-01-10' +
        random() * (date '2018-04-15' -
-                   timestamp '2014-01-20') birth_date,
+                   timestamp '2014-01-20'),'yyyy-mm-ddThh24:mi:ss.msZ') birth_date,
   random_between(10000000,99999999) unique_id,uuid_generate_v4() base_entity_id,
   uuid_generate_v4() openmrs_uuid,cm.base_entity_id original_id,relational_id
   from
@@ -43,7 +43,7 @@ BEGIN
     update core.client set
       json= jsonb_set(
           jsonb_set(jsonb_set( jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(json,
-          '{relationships,mother}',concat('"',v_mother,'"')::jsonb,false),
+          '{relationships,mother,0}',concat('"',v_mother,'"')::jsonb,false),
           '{identifiers,OPENMRS_UUID}',concat('"',t_client.openmrs_uuid,'"')::jsonb,false),
           '{identifiers,M_ZEIR_ID}',concat('"',t_client.unique_id,'"')::jsonb,false),
           '{identifiers,ZEIR_ID}',concat('"',t_client.unique_id,'"')::jsonb,false),
