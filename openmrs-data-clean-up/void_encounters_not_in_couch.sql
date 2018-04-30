@@ -10,6 +10,5 @@ WHERE e.encounter_type = 2 AND e.voided = 0 AND e.uuid NOT IN (SELECT u.uuid  FR
 SET @@group_concat_max_len = 1024;
 
 -- drop indexing
-
-CREATE INDEX idx_uuid on encounter(uuid);
-CREATE INDEX idx_encounter_search on encounter(encounter_type,voided, uuid) ;
+ALTER TABLE encounter DROP idx_uuid;
+ALTER TABLE encounter DROP idx_encounter_search;
