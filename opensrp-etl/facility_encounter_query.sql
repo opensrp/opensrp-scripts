@@ -36,4 +36,4 @@
   vitamin_a      AS "Vitamin A",
   mebendezol     AS "Mebendezol",
   itn            AS "ITN"
-FROM facility_encounters;
+FROM facility_encounters
