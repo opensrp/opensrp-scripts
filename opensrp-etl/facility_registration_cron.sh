@@ -17,18 +17,18 @@ generateRegistrationEtl() {
 
   mkdir -p $report_folder
   find $report_folder -mtime +$reportLife -exec rm {} \;
-  export PGPASSWORD="XXXX"
+  export PGPASSWORD="XXXXXX"
   psql -h localhost -d opensrp -U $mysqlUser -f ./registrations_indicator_query.sql
-  psql -h localhost -d opensrp -U $mysqlUser -f ./facility_registration_query.sql | sed  's/\t/,/g' > $sourceFile
+  psql -h localhost -d opensrp -U $mysqlUser -c "COPY ($(<./facility_registration_query.sql)) TO STDOUT WITH CSV HEADER DELIMITER ','; " > $sourceFile
   unset PGPASSWORD
+export AWS_ACCESS_KEY_ID=XXXXXXXXXXXXXXXX
+export AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  /usr/bin/aws s3 sync $report_folder s3://XXX/XX/X --acl public-read --delete
+unset AWS_ACCESS_KEY_ID
+unset AWS_SECRET_ACCESS_KEY
 
-  /usr/bin/aws s3 sync $report_folder s3://opensrp/reports/etl --acl public-read --delete
-
-
-  if [ -z ${slackChannel+x} ]; then echo "Not sending URL to Slack"; else
-    /usr/bin/curl -F username="PATH Zambia ETL" -F text="https://s3.amazonaws.com/opensrp/reports/$destinationFile" -F channel=$slackChannel -F token="$slackToken" https://slack.com/api/chat.postMessage;
-  fi
 }
 
 generateRegistrationEtl $1 $2 $3 $4 $5 $6
+
 
