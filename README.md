@@ -1,5 +1,5 @@
-# path-zambia-etl
-Customised OpenMRS ETL for Report Requirements for Path Zambia Project
+# opensrp-scripts
+Customized Scripts for OpenSRP Projects
 
 ### Concept Constants Dictionary:
 - Location Concept ID:  `163531`
