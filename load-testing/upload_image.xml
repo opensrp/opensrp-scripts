@@ -12,14 +12,21 @@
             <users interarrival="1" unit="second"></users>
         </arrivalphase>
     </load>
+    <options>
+        <option name="file_server" id="credentials" value="credentials.txt"></option>
+    </options>
     <sessions>
-         <session name="profileimage_upload" probability="0" type="ts_http">
+        <session name="profileimage_upload" probability="0" type="ts_http">
+            <setdynvars sourcetype="file" fileid="credentials" delimiter=";" order="iter">
+                <var name="username" />
+                <var name="password" />
+            </setdynvars>
             <setdynvars sourcetype="random_string" length="15">
                 <var name="id" />
             </setdynvars>
             <request subst="true">
                 <http url="/opensrp/multimedia/upload" contents_from_file="upload.txt" content_type="multipart/form-data; charset=ISO-8859-1; boundary=--------------------------518007895463877428138895" method="POST" version="1.1">
-                    <www_authenticate userid="***REMOVED***" passwd="***REMOVED***" />
+                    <www_authenticate userid="%%_username%%" passwd="%%_password%%" />
                     <http_header name="accept-encoding" value="gzip, deflate" />
                     <http_header name="Accept" value="*/*" />
                     <http_header name="Connection" value="keep-alive" />
