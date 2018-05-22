@@ -76,6 +76,10 @@
             </request>
         </session>
         <session name="add_event" probability="7" type="ts_http">
+            <setdynvars sourcetype="file" fileid="credentials" delimiter=";" order="iter">
+                <var name="username" />
+                <var name="password" />
+            </setdynvars>
             <request subst="true">
                 <http url="/opensrp/rest/event/add" method="POST" content_type='application/json' contents_from_file="events.json">
                     <www_authenticate userid="%%_username%%" passwd="%%_password%%" />
