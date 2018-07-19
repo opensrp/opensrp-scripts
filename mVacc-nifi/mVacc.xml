@@ -1383,7 +1383,7 @@
                 <properties>
                     <entry>
                         <key>Attributes List</key>
-                        <value>name,urns,groups,cdob,mother_zeir_id,home_facility,home_address,residential_area,land_mark,cname</value>
+                        <value>name,urns,groups,cdob,date_enrolled,mother_zeir_id,home_facility,home_address,residential_area,land_mark,cname</value>
                     </entry>
                     <entry>
                         <key>attributes-to-json-regex</key>
@@ -1683,7 +1683,7 @@
                 <autoTerminate>false</autoTerminate>
                 <name>success</name>
             </relationships>
-            <state>RUNNING</state>
+            <state>STOPPED</state>
             <style/>
             <type>org.apache.nifi.processors.standard.ExecuteSQL</type>
         </processors>
@@ -2218,6 +2218,12 @@
                         </value>
                     </entry>
                     <entry>
+                        <key>dateJoined</key>
+                        <value>
+                            <name>dateJoined</name>
+                        </value>
+                    </entry>
+                    <entry>
                         <key>homeAddress</key>
                         <value>
                             <name>homeAddress</name>
@@ -2303,6 +2309,10 @@
                     <entry>
                         <key>childName</key>
                         <value>$.childName</value>
+                    </entry>
+                    <entry>
+                        <key>dateJoined</key>
+                        <value>$.dateJoined</value>
                     </entry>
                     <entry>
                         <key>homeAddress</key>
@@ -3140,6 +3150,12 @@
                         </value>
                     </entry>
                     <entry>
+                        <key>date_enrolled</key>
+                        <value>
+                            <name>date_enrolled</name>
+                        </value>
+                    </entry>
+                    <entry>
                         <key>groups</key>
                         <value>
                             <name>groups</name>
@@ -3209,6 +3225,10 @@
                     <entry>
                         <key>cname</key>
                         <value>${childName}</value>
+                    </entry>
+                    <entry>
+                        <key>date_enrolled</key>
+                        <value>${dateJoined}</value>
                     </entry>
                     <entry>
                         <key>groups</key>
@@ -4590,7 +4610,7 @@
             <id>7341f34d-b495-3ef7-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1763.3306976570407</x>
+                <x>1761.9988495125094</x>
                 <y>2541.8614929138857</y>
             </position>
             <bundle>
@@ -4997,5 +5017,5 @@
             <type>org.apache.nifi.processors.standard.InvokeHTTP</type>
         </processors>
     </snippet>
-    <timestamp>07/18/2018 19:02:49 EAT</timestamp>
+    <timestamp>07/19/2018 17:51:32 EAT</timestamp>
 </template>
