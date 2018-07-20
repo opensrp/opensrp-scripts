@@ -68,6 +68,48 @@
             <zIndex>0</zIndex>
         </connections>
         <connections>
+            <id>9283ab62-c1e1-3480-0000-000000000000</id>
+            <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
+            <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
+            <backPressureObjectThreshold>10000</backPressureObjectThreshold>
+            <destination>
+                <groupId>741a03bc-5559-3043-0000-000000000000</groupId>
+                <id>7c3d1f7a-aa38-3be1-0000-000000000000</id>
+                <type>PROCESSOR</type>
+            </destination>
+            <flowFileExpiration>0 sec</flowFileExpiration>
+            <labelIndex>1</labelIndex>
+            <name>Registered </name>
+            <selectedRelationships>unmatched</selectedRelationships>
+            <source>
+                <groupId>741a03bc-5559-3043-0000-000000000000</groupId>
+                <id>e818ea6a-db42-3085-0000-000000000000</id>
+                <type>PROCESSOR</type>
+            </source>
+            <zIndex>0</zIndex>
+        </connections>
+        <connections>
+            <id>9ae5027a-09ad-3be0-0000-000000000000</id>
+            <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
+            <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
+            <backPressureObjectThreshold>10000</backPressureObjectThreshold>
+            <destination>
+                <groupId>741a03bc-5559-3043-0000-000000000000</groupId>
+                <id>2a7db2a6-5bc8-3712-0000-000000000000</id>
+                <type>PROCESSOR</type>
+            </destination>
+            <flowFileExpiration>0 sec</flowFileExpiration>
+            <labelIndex>1</labelIndex>
+            <name></name>
+            <selectedRelationships>success</selectedRelationships>
+            <source>
+                <groupId>741a03bc-5559-3043-0000-000000000000</groupId>
+                <id>7c3d1f7a-aa38-3be1-0000-000000000000</id>
+                <type>PROCESSOR</type>
+            </source>
+            <zIndex>0</zIndex>
+        </connections>
+        <connections>
             <id>9bec716b-cc63-3673-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
@@ -94,11 +136,11 @@
             <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
             <backPressureObjectThreshold>10000</backPressureObjectThreshold>
             <bends>
-                <x>2223.657949721687</x>
+                <x>2224.407552984256</x>
                 <y>2804.275302921007</y>
             </bends>
             <bends>
-                <x>2223.657949721687</x>
+                <x>2224.407552984256</x>
                 <y>2854.275302921007</y>
             </bends>
             <destination>
@@ -113,6 +155,27 @@
             <source>
                 <groupId>741a03bc-5559-3043-0000-000000000000</groupId>
                 <id>ff53a5fd-67ac-32b4-0000-000000000000</id>
+                <type>PROCESSOR</type>
+            </source>
+            <zIndex>0</zIndex>
+        </connections>
+        <connections>
+            <id>ae184fae-ff34-3eb3-0000-000000000000</id>
+            <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
+            <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
+            <backPressureObjectThreshold>10000</backPressureObjectThreshold>
+            <destination>
+                <groupId>741a03bc-5559-3043-0000-000000000000</groupId>
+                <id>2a7db2a6-5bc8-3712-0000-000000000000</id>
+                <type>PROCESSOR</type>
+            </destination>
+            <flowFileExpiration>0 sec</flowFileExpiration>
+            <labelIndex>1</labelIndex>
+            <name></name>
+            <selectedRelationships>success</selectedRelationships>
+            <source>
+                <groupId>741a03bc-5559-3043-0000-000000000000</groupId>
+                <id>f01bb14b-623d-37ad-0000-000000000000</id>
                 <type>PROCESSOR</type>
             </source>
             <zIndex>0</zIndex>
@@ -165,11 +228,11 @@
             <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
             <backPressureObjectThreshold>10000</backPressureObjectThreshold>
             <bends>
-                <x>1258.0878933401991</x>
+                <x>1258.8374966027682</x>
                 <y>2585.8569901268133</y>
             </bends>
             <bends>
-                <x>1258.0878933401991</x>
+                <x>1258.8374966027682</x>
                 <y>2635.8569901268133</y>
             </bends>
             <destination>
@@ -260,7 +323,7 @@
             <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
             <backPressureObjectThreshold>10000</backPressureObjectThreshold>
             <bends>
-                <x>1742.9919640553521</x>
+                <x>1743.7415673179212</x>
                 <y>3188.867051612508</y>
             </bends>
             <destination>
@@ -286,11 +349,11 @@
             <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
             <backPressureObjectThreshold>10000</backPressureObjectThreshold>
             <bends>
-                <x>1043.7001112198986</x>
+                <x>1044.4497144824677</x>
                 <y>841.6117643267376</y>
             </bends>
             <bends>
-                <x>1043.7001112198986</x>
+                <x>1044.4497144824677</x>
                 <y>891.6117643267376</y>
             </bends>
             <destination>
@@ -421,11 +484,11 @@
             <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
             <backPressureObjectThreshold>10000</backPressureObjectThreshold>
             <bends>
-                <x>1259.4196856071214</x>
+                <x>1260.1692888696905</x>
                 <y>2872.198473383608</y>
             </bends>
             <bends>
-                <x>1259.4196856071214</x>
+                <x>1260.1692888696905</x>
                 <y>2922.198473383608</y>
             </bends>
             <destination>
@@ -452,7 +515,7 @@
             <backPressureObjectThreshold>10000</backPressureObjectThreshold>
             <destination>
                 <groupId>741a03bc-5559-3043-0000-000000000000</groupId>
-                <id>2a7db2a6-5bc8-3712-0000-000000000000</id>
+                <id>e818ea6a-db42-3085-0000-000000000000</id>
                 <type>PROCESSOR</type>
             </destination>
             <flowFileExpiration>0 sec</flowFileExpiration>
@@ -530,12 +593,33 @@
             <zIndex>0</zIndex>
         </connections>
         <connections>
+            <id>256be6fb-3f8c-3fd7-0000-000000000000</id>
+            <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
+            <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
+            <backPressureObjectThreshold>10000</backPressureObjectThreshold>
+            <destination>
+                <groupId>741a03bc-5559-3043-0000-000000000000</groupId>
+                <id>f01bb14b-623d-37ad-0000-000000000000</id>
+                <type>PROCESSOR</type>
+            </destination>
+            <flowFileExpiration>0 sec</flowFileExpiration>
+            <labelIndex>1</labelIndex>
+            <name>Not Registered </name>
+            <selectedRelationships>notregistered</selectedRelationships>
+            <source>
+                <groupId>741a03bc-5559-3043-0000-000000000000</groupId>
+                <id>e818ea6a-db42-3085-0000-000000000000</id>
+                <type>PROCESSOR</type>
+            </source>
+            <zIndex>0</zIndex>
+        </connections>
+        <connections>
             <id>34d42780-8edb-3075-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
             <backPressureObjectThreshold>10000</backPressureObjectThreshold>
             <bends>
-                <x>1269.9505978327902</x>
+                <x>1270.7002010953593</x>
                 <y>220.49105464294502</y>
             </bends>
             <destination>
@@ -560,11 +644,11 @@
             <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
             <backPressureObjectThreshold>10000</backPressureObjectThreshold>
             <bends>
-                <x>1072.9647636748703</x>
+                <x>1073.7143669374393</x>
                 <y>1118.1905384914562</y>
             </bends>
             <bends>
-                <x>1072.9647636748703</x>
+                <x>1073.7143669374393</x>
                 <y>1168.1905384914562</y>
             </bends>
             <destination>
@@ -1006,7 +1090,7 @@
             <id>975208a9-02a2-3a56-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1008.340767792659</x>
+                <x>1009.090371055228</x>
                 <y>0.0</y>
             </position>
             <height>696.8123168945312</height>
@@ -1018,7 +1102,7 @@
             <id>95459112-655c-32ff-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1093.6521206599386</x>
+                <x>1094.4017239225077</x>
                 <y>515.0089741833503</y>
             </position>
             <bundle>
@@ -1333,7 +1417,7 @@
             <id>9a7eaedf-6788-3642-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>799.898924486175</x>
+                <x>800.6485277487441</x>
                 <y>2020.569734973255</y>
             </position>
             <bundle>
@@ -1383,7 +1467,7 @@
                 <properties>
                     <entry>
                         <key>Attributes List</key>
-                        <value>name,urns,groups,cdob,date_enrolled,mother_zeir_id,home_facility,home_address,residential_area,land_mark,cname</value>
+                        <value>name,urns,groups,cdob,c2dob,c3dob,date_enrolled,mother_zeir_id,home_facility,home_address,residential_area,land_mark,cname,c2name,c3name</value>
                     </entry>
                     <entry>
                         <key>attributes-to-json-regex</key>
@@ -1423,7 +1507,7 @@
             <id>a55180d5-2556-345f-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>3.1482222766499035E-5</x>
+                <x>0.7496347447918197</x>
                 <y>802.5037482022767</y>
             </position>
             <bundle>
@@ -1518,8 +1602,8 @@
             <id>a9368984-3c9f-3d08-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1777.232403276182</x>
-                <y>1769.0865804103987</y>
+                <x>1773.1454586871885</x>
+                <y>1836.7975179103987</y>
             </position>
             <bundle>
                 <artifact>nifi-standard-nar</artifact>
@@ -1579,7 +1663,7 @@
             <id>b1d217a3-f077-327d-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1199.299235543605</x>
+                <x>1200.048838806174</x>
                 <y>1077.623152536219</y>
             </position>
             <bundle>
@@ -1683,7 +1767,7 @@
                 <autoTerminate>false</autoTerminate>
                 <name>success</name>
             </relationships>
-            <state>STOPPED</state>
+            <state>RUNNING</state>
             <style/>
             <type>org.apache.nifi.processors.standard.ExecuteSQL</type>
         </processors>
@@ -1691,7 +1775,7 @@
             <id>b7f9f1f4-114b-395a-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1188.630241728939</x>
+                <x>1189.379844991508</x>
                 <y>804.7723711857716</y>
             </position>
             <bundle>
@@ -1756,8 +1840,8 @@
             <id>c1a1448e-f07f-374d-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>795.6602783292278</x>
-                <y>1766.046652053679</y>
+                <x>0.0</x>
+                <y>1832.1454069364916</y>
             </position>
             <bundle>
                 <artifact>nifi-standard-nar</artifact>
@@ -1851,7 +1935,7 @@
             <id>c2995bfb-620d-3d8c-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>617.9647636748703</x>
+                <x>618.7143669374393</x>
                 <y>1078.1905384914562</y>
             </position>
             <bundle>
@@ -1936,7 +2020,7 @@
             <id>d0f15ef5-3713-3ee6-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>0.0</x>
+                <x>0.7496032625690532</x>
                 <y>1076.8588270329303</y>
             </position>
             <bundle>
@@ -2006,7 +2090,7 @@
             <id>d1be7042-3bd6-3f69-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1768.394859466518</x>
+                <x>1769.144462729087</x>
                 <y>1049.088205688038</y>
             </position>
             <bundle>
@@ -2067,7 +2151,7 @@
             <id>d480e672-da6a-3943-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1769.9896655063644</x>
+                <x>1770.7392687689335</x>
                 <y>3239.7355666661388</y>
             </position>
             <bundle>
@@ -2159,10 +2243,71 @@
             <type>org.apache.nifi.processors.standard.EvaluateJsonPath</type>
         </processors>
         <processors>
+            <id>e818ea6a-db42-3085-0000-000000000000</id>
+            <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
+            <position>
+                <x>1199.007895648844</x>
+                <y>1298.432049370756</y>
+            </position>
+            <bundle>
+                <artifact>nifi-standard-nar</artifact>
+                <group>org.apache.nifi</group>
+                <version>1.6.0</version>
+            </bundle>
+            <config>
+                <bulletinLevel>WARN</bulletinLevel>
+                <comments></comments>
+                <concurrentlySchedulableTaskCount>1</concurrentlySchedulableTaskCount>
+                <descriptors>
+                    <entry>
+                        <key>Routing Strategy</key>
+                        <value>
+                            <name>Routing Strategy</name>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>notregistered</key>
+                        <value>
+                            <name>notregistered</name>
+                        </value>
+                    </entry>
+                </descriptors>
+                <executionNode>ALL</executionNode>
+                <lossTolerant>false</lossTolerant>
+                <penaltyDuration>30 sec</penaltyDuration>
+                <properties>
+                    <entry>
+                        <key>Routing Strategy</key>
+                        <value>Route to Property name</value>
+                    </entry>
+                    <entry>
+                        <key>notregistered</key>
+                        <value>${results:isEmpty()}</value>
+                    </entry>
+                </properties>
+                <runDurationMillis>0</runDurationMillis>
+                <schedulingPeriod>0 sec</schedulingPeriod>
+                <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
+                <yieldDuration>1 sec</yieldDuration>
+            </config>
+            <name>RouteOnAttribute</name>
+            <relationships>
+                <autoTerminate>false</autoTerminate>
+                <name>notregistered</name>
+            </relationships>
+            <relationships>
+                <autoTerminate>false</autoTerminate>
+                <name>unmatched</name>
+            </relationships>
+            <state>RUNNING</state>
+            <style/>
+            <type>org.apache.nifi.processors.standard.RouteOnAttribute</type>
+        </processors>
+        <processors>
             <id>ea5554c9-49bc-3cf6-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1768.395133352165</x>
+                <x>1769.144736614734</x>
                 <y>799.3369563771328</y>
             </position>
             <bundle>
@@ -2209,6 +2354,30 @@
                         <key>birthDate</key>
                         <value>
                             <name>birthDate</name>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>c2dob</key>
+                        <value>
+                            <name>c2dob</name>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>c2name</key>
+                        <value>
+                            <name>c2name</name>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>c3dob</key>
+                        <value>
+                            <name>c3dob</name>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>c3name</key>
+                        <value>
+                            <name>c3name</name>
                         </value>
                     </entry>
                     <entry>
@@ -2307,6 +2476,22 @@
                         <value>$.birthDate</value>
                     </entry>
                     <entry>
+                        <key>c2dob</key>
+                        <value>$.c2dob</value>
+                    </entry>
+                    <entry>
+                        <key>c2name</key>
+                        <value>$.c2name</value>
+                    </entry>
+                    <entry>
+                        <key>c3dob</key>
+                        <value>$.c3dob</value>
+                    </entry>
+                    <entry>
+                        <key>c3name</key>
+                        <value>$.c3name</value>
+                    </entry>
+                    <entry>
                         <key>childName</key>
                         <value>$.childName</value>
                     </entry>
@@ -2374,11 +2559,86 @@
             <type>org.apache.nifi.processors.standard.EvaluateJsonPath</type>
         </processors>
         <processors>
+            <id>f01bb14b-623d-37ad-0000-000000000000</id>
+            <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
+            <position>
+                <x>613.7917016703029</x>
+                <y>1258.127941397895</y>
+            </position>
+            <bundle>
+                <artifact>nifi-update-attribute-nar</artifact>
+                <group>org.apache.nifi</group>
+                <version>1.6.0</version>
+            </bundle>
+            <config>
+                <bulletinLevel>WARN</bulletinLevel>
+                <comments></comments>
+                <concurrentlySchedulableTaskCount>1</concurrentlySchedulableTaskCount>
+                <descriptors>
+                    <entry>
+                        <key>Delete Attributes Expression</key>
+                        <value>
+                            <name>Delete Attributes Expression</name>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>Store State</key>
+                        <value>
+                            <name>Store State</name>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>Stateful Variables Initial Value</key>
+                        <value>
+                            <name>Stateful Variables Initial Value</name>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>rapidpro_url</key>
+                        <value>
+                            <name>rapidpro_url</name>
+                        </value>
+                    </entry>
+                </descriptors>
+                <executionNode>ALL</executionNode>
+                <lossTolerant>false</lossTolerant>
+                <penaltyDuration>30 sec</penaltyDuration>
+                <properties>
+                    <entry>
+                        <key>Delete Attributes Expression</key>
+                    </entry>
+                    <entry>
+                        <key>Store State</key>
+                        <value>Do not store state</value>
+                    </entry>
+                    <entry>
+                        <key>Stateful Variables Initial Value</key>
+                    </entry>
+                    <entry>
+                        <key>rapidpro_url</key>
+                        <value>https://rapidpro.ona.io/api/v2/contacts.json</value>
+                    </entry>
+                </properties>
+                <runDurationMillis>0</runDurationMillis>
+                <schedulingPeriod>0 sec</schedulingPeriod>
+                <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
+                <yieldDuration>1 sec</yieldDuration>
+            </config>
+            <name>UpdateAttribute</name>
+            <relationships>
+                <autoTerminate>false</autoTerminate>
+                <name>success</name>
+            </relationships>
+            <state>RUNNING</state>
+            <style/>
+            <type>org.apache.nifi.processors.attributes.UpdateAttribute</type>
+        </processors>
+        <processors>
             <id>ff235945-f352-3fcd-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1282.359000418222</x>
-                <y>1580.914560534117</y>
+                <x>609.2232734805958</x>
+                <y>1700.2149755731796</y>
             </position>
             <bundle>
                 <artifact>nifi-standard-nar</artifact>
@@ -2490,7 +2750,7 @@
             <id>ff53a5fd-67ac-32b4-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1768.6579497216871</x>
+                <x>1769.4075529842562</x>
                 <y>2764.275302921007</y>
             </position>
             <bundle>
@@ -2580,7 +2840,7 @@
             <id>0498585a-099b-394b-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>803.0878933401992</x>
+                <x>803.8374966027683</x>
                 <y>2545.8569901268133</y>
             </position>
             <bundle>
@@ -2681,7 +2941,7 @@
             <id>06ba7350-844e-3de9-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>804.3078086758434</x>
+                <x>805.0574119384124</x>
                 <y>2314.445869733298</y>
             </position>
             <bundle>
@@ -2789,7 +3049,7 @@
             <id>07b18c2e-61b3-3bc6-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1765.9942626043398</x>
+                <x>1766.743865866909</x>
                 <y>3007.9985365588777</y>
             </position>
             <bundle>
@@ -3106,7 +3366,7 @@
             <id>091232d2-17f4-3cec-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1776.8561903164828</x>
+                <x>1777.6057935790518</x>
                 <y>2014.2444086512928</y>
             </position>
             <bundle>
@@ -3281,7 +3541,7 @@
             <id>13523cb5-2d48-3225-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1092.1547375422629</x>
+                <x>1092.904340804832</x>
                 <y>270.1625691540534</y>
             </position>
             <bundle>
@@ -3376,7 +3636,7 @@
             <id>1c6ef72e-3445-385e-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1770.7676025760672</x>
+                <x>1771.5172058386363</x>
                 <y>2312.0822337440163</y>
             </position>
             <bundle>
@@ -3569,7 +3829,7 @@
                     </entry>
                     <entry>
                         <key>Remote URL</key>
-                        <value>https://rapidpro.ona.io/api/v2/contacts.json</value>
+                        <value>${rapidpro_url}</value>
                     </entry>
                     <entry>
                         <key>SSL Context Service</key>
@@ -3702,7 +3962,7 @@
             <id>200b0242-b380-3d7c-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>804.4196856071214</x>
+                <x>805.1692888696905</x>
                 <y>2832.198473383608</y>
             </position>
             <bundle>
@@ -3816,7 +4076,7 @@
             <id>221dcf72-0689-3f24-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1097.041845391384</x>
+                <x>1097.791448653953</x>
                 <y>35.59765340015241</y>
             </position>
             <bundle>
@@ -4002,8 +4262,8 @@
             <id>2a7db2a6-5bc8-3712-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>798.0051856157893</x>
-                <y>1332.0124629754189</y>
+                <x>5.569272520936465</x>
+                <y>1348.1339229363564</y>
             </position>
             <bundle>
                 <artifact>nifi-standard-nar</artifact>
@@ -4111,7 +4371,7 @@
             <id>3f3f0a6e-7fbe-38ee-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1770.657976999149</x>
+                <x>1771.407580261718</x>
                 <y>1316.414309591558</y>
             </position>
             <bundle>
@@ -4437,7 +4697,7 @@
             <id>550a6819-9902-326b-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1767.5248390103181</x>
+                <x>1768.2744422728872</x>
                 <y>501.6692265182796</y>
             </position>
             <bundle>
@@ -4548,7 +4808,7 @@
             <id>6b6c635b-f8ff-31ad-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1764.1905933247358</x>
+                <x>1764.9401965873049</x>
                 <y>33.76736445670909</y>
             </position>
             <bundle>
@@ -4610,7 +4870,7 @@
             <id>7341f34d-b495-3ef7-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>1761.9988495125094</x>
+                <x>1762.7484527750785</x>
                 <y>2541.8614929138857</y>
             </position>
             <bundle>
@@ -4702,10 +4962,85 @@
             <type>org.apache.nifi.processors.standard.EvaluateJsonPath</type>
         </processors>
         <processors>
+            <id>7c3d1f7a-aa38-3be1-0000-000000000000</id>
+            <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
+            <position>
+                <x>612.997054453506</x>
+                <y>1449.1810419838325</y>
+            </position>
+            <bundle>
+                <artifact>nifi-update-attribute-nar</artifact>
+                <group>org.apache.nifi</group>
+                <version>1.6.0</version>
+            </bundle>
+            <config>
+                <bulletinLevel>WARN</bulletinLevel>
+                <comments></comments>
+                <concurrentlySchedulableTaskCount>1</concurrentlySchedulableTaskCount>
+                <descriptors>
+                    <entry>
+                        <key>Delete Attributes Expression</key>
+                        <value>
+                            <name>Delete Attributes Expression</name>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>Store State</key>
+                        <value>
+                            <name>Store State</name>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>Stateful Variables Initial Value</key>
+                        <value>
+                            <name>Stateful Variables Initial Value</name>
+                        </value>
+                    </entry>
+                    <entry>
+                        <key>rapidpro_url</key>
+                        <value>
+                            <name>rapidpro_url</name>
+                        </value>
+                    </entry>
+                </descriptors>
+                <executionNode>ALL</executionNode>
+                <lossTolerant>false</lossTolerant>
+                <penaltyDuration>30 sec</penaltyDuration>
+                <properties>
+                    <entry>
+                        <key>Delete Attributes Expression</key>
+                    </entry>
+                    <entry>
+                        <key>Store State</key>
+                        <value>Do not store state</value>
+                    </entry>
+                    <entry>
+                        <key>Stateful Variables Initial Value</key>
+                    </entry>
+                    <entry>
+                        <key>rapidpro_url</key>
+                        <value>https://rapidpro.ona.io/api/v2/contacts.json?urn=tel:+254${motherTel:substring(1)}</value>
+                    </entry>
+                </properties>
+                <runDurationMillis>0</runDurationMillis>
+                <schedulingPeriod>0 sec</schedulingPeriod>
+                <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
+                <yieldDuration>1 sec</yieldDuration>
+            </config>
+            <name>UpdateAttribute</name>
+            <relationships>
+                <autoTerminate>false</autoTerminate>
+                <name>success</name>
+            </relationships>
+            <state>RUNNING</state>
+            <style/>
+            <type>org.apache.nifi.processors.attributes.UpdateAttribute</type>
+        </processors>
+        <processors>
             <id>7e5151ee-f147-372c-0000-000000000000</id>
             <parentGroupId>741a03bc-5559-3043-0000-000000000000</parentGroupId>
             <position>
-                <x>588.7001112198986</x>
+                <x>589.4497144824677</x>
                 <y>801.6117643267376</y>
             </position>
             <bundle>
@@ -5017,5 +5352,5 @@
             <type>org.apache.nifi.processors.standard.InvokeHTTP</type>
         </processors>
     </snippet>
-    <timestamp>07/19/2018 17:51:32 EAT</timestamp>
+    <timestamp>07/20/2018 12:42:34 EAT</timestamp>
 </template>
