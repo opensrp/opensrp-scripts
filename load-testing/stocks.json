@@ -1,0 +1,19 @@
+{
+    "stocks": [
+    {
+        "_id": "95d7fac1d8f5770053fd4ee1453a2b61",
+        "_rev": "1-87c0db6c703624d08466f9942315bfe8",
+        "type": "Stock",
+        "dateCreated": "2017-07-17T09:46:17.512-04:00",
+        "serverVersion": 1500299177190,
+        "identifier": 9,
+        "vaccine_type_id": "5",
+        "transaction_type": "issued",
+        "providerid": "emmanuel",
+        "value": -16,
+        "date_created": 1500242400000,
+        "to_from": "C/C",
+        "date_updated": 1500298586356,
+        "version": 1500299177190
+    }]
+}

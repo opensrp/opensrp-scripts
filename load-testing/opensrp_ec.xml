@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/local/share/tsung/tsung-1.0.dtd" [] >
+<tsung loglevel="warning">
+    <clients>
+        <client host="localhost" use_controller_vm="true" maxusers="10000" />
+    </clients>
+    <servers>
+        <server host="localhost" port="8080" type="tcp"></server>
+    </servers>
+    <load>
+        <arrivalphase phase="1" duration="1" unit="minute">
+            <users interarrival="1" unit="second"></users>
+        </arrivalphase>
+        <arrivalphase phase="2" duration="3" unit="minute">
+            <users interarrival="0.5" unit="second"></users>
+        </arrivalphase>
+        <arrivalphase phase="3" duration="3" unit="minute">
+            <users arrivalrate="30" maxnumber="10000" unit="second"></users>
+        </arrivalphase>
+    </load>
+    <options>
+        <option name="file_server" id="credentials" value="credentials.txt"></option>
+    </options>
+    <sessions>
+        <session name="ec_sync" probability="70" type="ts_http">
+            <setdynvars sourcetype="file" fileid="credentials" delimiter=";" order="iter">
+                <var name="username" />
+                <var name="password" />
+            </setdynvars>
+            <setdynvars sourcetype="random_number" start="0" end="1525090530">
+                <var name="timestamp" />
+            </setdynvars>
+            <request subst="true">
+                <http url="/opensrp/rest/event/sync?locationId=39d0a527-d4dc-4946-ad8f-7cb045cc0bb8,42abc582-6658-488b-922e-7be500c070f3,42b88545-7ebb-4e11-8d1a-3d3a924c8af4,5e79ae00-5a69-4814-aace-30e4717f823a,8a40cd7e-b8d4-4c6e-b88f-a77272fec630,908afef8-c82c-413c-a35d-2a0bbe88a53a,e79ff5bc-b6ff-46bc-9bbf-0cedc7d6c4c7&amp;serverVersion=%%_timestamp%%&amp;limit=500" method="GET" version="1.1">
+                    <www_authenticate userid="%%_username%%" passwd="%%_password%%" />
+                </http>
+            </request>
+        </session>
+        <session name="add_event_clients" probability="30" type="ts_http">
+            <setdynvars sourcetype="file" fileid="credentials" delimiter=";" order="iter">
+                <var name="username" />
+                <var name="password" />
+            </setdynvars>
+            <request subst="true">
+                <http url="/opensrp/rest/event/add" method="POST" content_type='application/json' contents_from_file="events.json">
+                    <www_authenticate userid="%%_username%%" passwd="%%_password%%" />
+                </http>
+            </request>
+        </session>
+    </sessions>
+</tsung>
