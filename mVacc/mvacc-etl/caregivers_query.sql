@@ -3,5 +3,5 @@
        mother_second_name AS "Mother’s Last Name",
        phone_number       AS "Phone number",
        rapidpro_uuid      AS "RapidProUuid"
-       
+
 FROM mvacc_mother;

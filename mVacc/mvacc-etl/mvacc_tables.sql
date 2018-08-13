@@ -17,7 +17,7 @@ CREATE INDEX i_rapidpro_uuid ON mvacc_mother (rapidpro_uuid);
 DROP TABLE IF EXISTS mvacc_child_mother_map;
 CREATE TABLE mvacc_child_mother_map (
   child_mother_map_id  SERIAL,
-  mother_id            INTEGER,
+  mother_id            INTEGER REFERENCES mvacc_mother(mother_id),
   zeir_id              VARCHAR(15) UNIQUE,
   PRIMARY KEY (child_mother_map_id)
 );
