@@ -1,1 +1,3 @@
 etl
+__pycache__/*
+*.pyc
