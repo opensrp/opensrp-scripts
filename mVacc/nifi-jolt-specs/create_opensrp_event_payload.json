@@ -1,0 +1,54 @@
+[
+  {
+    "operation": "default",
+    "spec": {
+      "type": "Event",
+      "eventType": "New Woman Registration",
+      "providerId": "biddemo",
+      "duration": 0,
+      "entityType": "child",
+      "test": null,
+      "humanReadableValue": null,
+      "parentCode1": "",
+      "parentCode2": "",
+      "formsubmissionField_ft": "formsubmissionField",
+      "fieldDataType_hf": "text",
+      "home_Facility_fs": "Home_Facility"
+    }
+  },
+  {
+    "operation": "shift",
+    "spec": {
+      "type": "type",
+      "eventType": "eventType",
+      "providerId": "providerId",
+      "duration": "duration",
+      "entityType": "entityType",
+      "datecreated": "dateCreated",
+      "motherbaseid": "baseEntityId",
+      "mother_formSubmissionId": "formSubmissionId",
+      "homefacilityUUID": "locationId",
+      "mzeir": "identifiers.M_MVAC_UNDER_5_ID",
+      "homefacility_uids": "obs_two.values[]",
+      "home_Facility_fs": "obs_two.formSubmissionField",
+      "test": "obs_two.humanReadableValues[]",
+      "fieldDataType_hf": "obs_two.fieldDataType",
+      "formsubmissionField_ft": "obs_two.fieldType",
+      "parentCode2": "obs_two.parentCode",
+      "home_facility_formSubmissionField": "obs_two.fieldCode"
+    }
+  },
+  {
+    "operation": "shift",
+    "spec": {
+      "*": { "@": "&" },
+      "obs_two": "obs[]"
+    }
+  },
+  {
+    "operation": "shift",
+    "spec": {
+      "@": "events[]"
+    }
+  }
+]
