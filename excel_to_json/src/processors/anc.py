@@ -8,8 +8,10 @@ fields_with_options = ['check_box', 'native_radio', ]
 
 simple_fields = [
     'choose_image', 'edit_text', 'hidden', 'date_picker', 'barcode',
-    'numbers_selector', 'normal_edit_text'
+    'numbers_selector', 'normal_edit_text','spinner',
 ]
+
+replaceeable_strings = [ '\"dont_know\"', '\"yes\"', '\"no\"', '\"specific_complaint\"', '\"None\"']
 
 
 class ANCProcessor(BaseProcessor):
@@ -50,15 +52,18 @@ class ANCProcessor(BaseProcessor):
             field_data['v_regex']['value'] = regex_data
         return field_data
 
-    def update_relevant_fields_in_the_json_file(self, excel_data, json_file_name):
+    def update_relevant_fields_in_the_json_file(self, excel_data, json_file_name, json_files, json_out_dir):
         """
         """
         new_data = []
         data =  no_of_steps = None
-        file_path =  os.path.join('json_files', json_file_name)
+        file_path =  os.path.join(json_files.strip(), json_file_name.strip())
         with open(file_path, 'r', encoding='unicode_escape') as data_file:
-
-            data = json.loads(data_file.read(),  strict=False)
+            try:
+                data = json.loads(data_file.read(),  strict=False)
+            except:
+                print("The file==>", file_path)
+                raise
             no_of_steps = int(data.get('count'))
 
         for m in range(1, no_of_steps+1):
@@ -100,20 +105,20 @@ class ANCProcessor(BaseProcessor):
                 new_data.append(field_data)
                 data['step{}'.format(m)]['fields'] = new_data
 
-        with open('json_files/_new{}'.format(json_file_name), 'w+') as new_data_file:
+        with open('{}/{}'.format(json_out_dir,json_file_name), 'w+') as new_data_file:
             json.dump(data, new_data_file, indent=4)
             print("Done")
 
 
-    def process_data(self, excel_data):
+    def process_data(self, excel_data, json_files, json_out_dir):
         sheet_file_map = {
-        # 'ANC Reg': 'anc_register',
+        'ANC Reg': 'anc_register',
         'Quick Check':'anc_quick_check',
         'Profile': 'anc_profile',
         'S&F': 'anc_symptoms_follow_up',
-        # 'PE': 'anc_physical_exam',
-        # 'Tests': 'anc_test',
-        # 'C&T': 'anc_counselling_treatment',
+        'PE': 'anc_physical_exam',
+        'Tests': 'anc_test',
+        'C&T': 'anc_counselling_treatment',
         # 'CASE INVESTIGATION FORM FOR AEF':'',
         # 'Vaccine Override': None,
         # 'Summary': None,
@@ -132,6 +137,6 @@ class ANCProcessor(BaseProcessor):
             json_file_name = '{}.json'.format(v)
             self.update_relevant_fields_in_the_json_file(
                 excel_data.get(k),
-                json_file_name
+                json_file_name, json_files, json_out_dir
             )
 

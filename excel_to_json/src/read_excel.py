@@ -7,13 +7,17 @@ import xlrd
 
 from processors import ANCProcessor
 
+path = '/home/brian/Desktop'
+excel = path +'/de_excel.xlsx'
+json_files_path =  path + '/opensrp_client_forms'
+
+json_out_dir =  path + '/opensrp_result'
 
 @click.command()
-@click.option('--excel_file', prompt='Path to the excel file', help='Path to the excel file to process')
-@click.option('--dump_excel_data', default=True, help='Dump the excel data to a JSON file.')
-@click.option('--out_dir', prompt='out_dir', help='Folder where the JSON files will be written')
-@click.option('--sheet_file_map', prompt='sheet_file_map', help='Map for the sheets in the excel to the JSON files')
-def read_exel_file(excel_file, dump_excel_data, out_dir, sheet_file_map):
+@click.option('--excel_file', default=excel, prompt='Path to the excel file', help='Path to the excel file to process')
+@click.option('--json_files', default=json_files_path, prompt='path to the source json files', help='Dump the excel data to a JSON file.')
+@click.option('--json_out_dir', default=json_out_dir, prompt='out_dir', help='Folder where the JSON files will be written')
+def read_exel_file(excel_file, json_files, json_out_dir):
     """
     """
     book = xlrd.open_workbook(excel_file)
@@ -38,7 +42,7 @@ def read_exel_file(excel_file, dump_excel_data, out_dir, sheet_file_map):
 
     obj = ANCProcessor()
 
-    obj.process_data(all_data)
+    obj.process_data(all_data, json_files, json_out_dir)
 
 if __name__ == '__main__':
     read_exel_file()
