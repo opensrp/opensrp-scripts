@@ -25,7 +25,6 @@ def read_exel_file(excel_file, json_files, json_out_dir):
     all_data = {}
     sheets =  [sheet.name for sheet in book.sheets()]
     for k in sheets:
-        print(k)
         sheet =  book.sheet_by_name(k)
         num_columns = sheet.ncols
         num_rows = sheet.nrows
