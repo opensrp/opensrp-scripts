@@ -1,3 +1,4 @@
+import copy
 import os
 import json
 
@@ -10,11 +11,36 @@ simple_fields = [
     'choose_image', 'edit_text', 'hidden', 'date_picker', 'barcode',
     'numbers_selector', 'normal_edit_text','spinner',
     'Image', 'Note', 'Text', 'QR Code','Calculation', 'Integer'
-
 ]
 
 
-replaceeable_strings = [ '\"dont_know\"', '\"yes\"', '\"no\"', '\"specific_complaint\"', '\"None\"']
+replaceable_strings = {
+    '\"dont_know\"': '\\\"dont_know\\\"',
+    '\"yes\"': '\\\"yes\\\"',
+    '\"no\"': '\\\"no\\\"',
+    '\"specific_complaint\"': '\\\"specific_complaint\\\"',
+    '\"None\"': '\\\"None\\\"',
+    '\n-': '\\n-',
+    '\n\n': '\\\\n\\\\n',
+    '"None"': '\\\\"None\\\\"',
+    '\"38\"': '\\\"38\\\"',
+    '\"3\"': '\\\"3\\\"',
+    '"yes"': '\"yes\"',
+    '"no"': '\"no\"',
+    '"3"': '\"3\"',
+    '"1"': '\"1\"',
+    '"2"': '\"2\"',
+}
+
+
+def replace_escape_chars_in_the_json_file(content):
+    for key, value in replaceable_strings.items():
+        content = content.replace(key, value )
+    try:
+        json.loads(content)
+    except Exception as error:
+        import pdb
+        pdb.set_trace()
 
 
 class ANCProcessor(BaseProcessor):
@@ -23,6 +49,9 @@ class ANCProcessor(BaseProcessor):
     def process_field_data(self, field_data, key_data, excel_row):
         """
         """
+        # if field_data.get('key') == 'cardiac_exam_abnormal':
+        #     import pdb
+        #     pdb.set_trace()
         name =  excel_row.get('Name')
         openmrs_entity_parent = str(excel_row.get('OpenMRS entity parent')).strip()
         if openmrs_entity_parent in ['--', 'NA']:
@@ -55,9 +84,43 @@ class ANCProcessor(BaseProcessor):
             field_data['v_regex']['value'] = regex_data
         return field_data
 
+    def process_sub_form(self, json_files, options, excel_data, excel_row):
+        for option_instance in options:
+            if option_instance.get('content_form'):
+                content_form_file_path = 'sub_form/' + option_instance.get('content_form')+ ('.json')
+                print("Processing ==>{}".format(content_form_file_path))
+                content_form_file =  os.path.join(json_files.strip(), content_form_file_path)
+                with open(content_form_file, 'r', encoding='unicode_escape') as content_form_data_file:
+                    try:
+                        content_form_contents = json.loads(content_form_data_file.read(),  strict=False)
+                        fields_in_content_form = content_form_contents.get('content_form')
 
-    def process_data_for_field():
-        pass
+                        # THis assumes that the 'key only appears in fields and not in other words'
+                        # The quotes help with ensuring that other key are not counted
+                        content_form_no_of_fields = json.dumps(fields_in_content_form).count('"key"')
+                        new_data = {"content_form": []}
+                        excel_data_index = excel_row + 1
+                        for field in fields_in_content_form:
+                            field_data = field
+                            options_data = []
+                            field_data = self.process_field_data(field_data, field, excel_data[excel_data_index])
+                            if field.get('type') in fields_with_options:
+                                excel_data_index += 3
+                                for field_option in field.get('options'):
+                                    field_option_data = self.process_field_data(field_option, field, excel_data[excel_data_index])
+                                    options_data.append(field_option_data)
+                                    excel_data_index += 1
+                                field_data['options'] = options_data
+                            else:
+                                field_data = field
+                                field_data = self.process_field_data(field_data, field, excel_data[excel_data_index])
+                                excel_data_index += 1
+                            new_data['content_form'].append(field_data)
+                        with open('/tmp/sub_forms/{}'.format(option_instance.get('content_form')+ ('.json')), 'w+') as new_data_file:
+                            json.dump(new_data, new_data_file, indent=4)
+                            return excel_data_index
+                    except:
+                        raise
 
     def update_relevant_fields_in_the_json_file(self, excel_data, json_file_name, json_files, json_out_dir):
         """
@@ -65,10 +128,13 @@ class ANCProcessor(BaseProcessor):
         data =  no_of_steps = None
         file_path =  os.path.join(json_files.strip(), json_file_name.strip())
         with open(file_path, 'r', encoding='unicode_escape') as data_file:
+            data = replace_escape_chars_in_the_json_file(data_file.read())
             try:
                 data = json.loads(data_file.read(),  strict=False)
+                data_content = data_file.read()
             except:
-                raise
+                data_content = data_file.read()
+                # data = replace_escape_chars_in_the_json_file(data_content)
             no_of_steps = int(data.get('count'))
 
         for m in range(1, no_of_steps+1):
@@ -80,7 +146,6 @@ class ANCProcessor(BaseProcessor):
                     if not row.get('Name'):
                         # These are option fields
                         continue
-
                     if row.get('Name') == key_data.get('key'):
                         field_type = key_data.get('type')
                         if field_type in simple_fields:
@@ -90,6 +155,8 @@ class ANCProcessor(BaseProcessor):
                         elif field_type in fields_with_options:
                             field_data = self.process_field_data(field_data, key_data, row)
                             options = key_data.get('options')
+                            self.process_sub_form(json_files, options, excel_data, index+1)
+
                             number_of_options = len(options)
                             x = 0
                             all_options = []
@@ -102,7 +169,6 @@ class ANCProcessor(BaseProcessor):
                                     all_options.append(option_field_data)
                                 x += 1
                                 new_index += 1
-
                             field_data['options'] = all_options
 
                         else:
@@ -118,13 +184,13 @@ class ANCProcessor(BaseProcessor):
 
     def process_data(self, excel_data, json_files, json_out_dir):
         sheet_file_map = {
-        'ANC Reg': 'anc_register',
-        'Quick Check':'anc_quick_check',
-        'Profile': 'anc_profile',
-        'S&F': 'anc_symptoms_follow_up',
+        # 'ANC Reg': 'anc_register',
+        # 'Quick Check':'anc_quick_check',
+        # 'Profile': 'anc_profile',
+        # 'S&F': 'anc_symptoms_follow_up',
         'PE': 'anc_physical_exam',
-        'Tests': 'anc_test',
-        'C&T': 'anc_counselling_treatment',
+        # 'Tests': 'anc_test',
+        # 'C&T': 'anc_counselling_treatment',
         # 'CASE INVESTIGATION FORM FOR AEF':'',
         # 'Vaccine Override': None,
         # 'Summary': None,
@@ -141,8 +207,9 @@ class ANCProcessor(BaseProcessor):
         }
         for k, v in sheet_file_map.items():
             json_file_name = '{}.json'.format(v)
+            sheet_data =  copy.deepcopy(excel_data.get(k))
             self.update_relevant_fields_in_the_json_file(
-                excel_data.get(k),
+                sheet_data,
                 json_file_name, json_files, json_out_dir
             )
 
