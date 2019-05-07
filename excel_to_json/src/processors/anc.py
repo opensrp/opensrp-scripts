@@ -2,6 +2,8 @@ import copy
 import os
 import json
 
+import subprocess
+
 from .base import BaseProcessor
 
 
@@ -19,28 +21,71 @@ replaceable_strings = {
     '\"yes\"': '\\\"yes\\\"',
     '\"no\"': '\\\"no\\\"',
     '\"specific_complaint\"': '\\\"specific_complaint\\\"',
-    '\"None\"': '\\\"None\\\"',
     '\n-': '\\n-',
     '\n\n': '\\\\n\\\\n',
-    '"None"': '\\\\"None\\\\"',
-    '\"38\"': '\\\"38\\\"',
-    '\"3\"': '\\\"3\\\"',
-    '"yes"': '\"yes\"',
-    '"no"': '\"no\"',
-    '"3"': '\"3\"',
-    '"1"': '\"1\"',
-    '"2"': '\"2\"',
 }
+
+
+pre_and_post_process_strings = {
+    '"None"': '"None_escaped"',
+    # '\"38\"': 'escaped_38',
+    # '\"3\"': 'escaped_3"',
+    '"yes"': 'escaped_yes',
+    '"no"': '"escaped_no"',
+    '"3"': 'escaped_3_no_slash',
+    '"1"': 'escaped_1_no_slash',
+    '"2"': 'escaped_2_no_slash',
+    # '\"None\"': 'escaped_none_with_slash',
+}
+
+def pre_process_file(json_file_path):
+    """
+    Format the JSON file to remove all the unwanted characters which cause
+    JSON to fail.
+    """
+    for key, value in pre_and_post_process_strings.items():
+        subprocess.run(
+            [
+                "sed",
+                '-i',
+                 's/{}/"{}"/g'.format(key, value),
+                json_file_path]
+        )
+    subprocess.run(
+        [
+            "sed",
+            '-i',
+             's/\"3\"/"{}"/g'.format("escaped_38"),
+            json_file_path]
+    )
+    subprocess.run(
+            [
+                "sed",
+                '-i',
+                 's/#"38#"/"{}"/g'.format("escaped_38"),
+                json_file_path]
+    )
+    subprocess.run(
+            [
+                "sed",
+                '-i',
+                 's/\"None\"/"{}"/g'.format("escaped_none_with_slash"),
+                json_file_path]
+    )
+
+def post_process_file(json_file_path):
+    """
+    Put back the characters that were removed during preprocessing.
+    """
 
 
 def replace_escape_chars_in_the_json_file(content):
     for key, value in replaceable_strings.items():
         content = content.replace(key, value )
     try:
-        json.loads(content)
+        return json.loads(content)
     except Exception as error:
-        import pdb
-        pdb.set_trace()
+        raise
 
 
 class ANCProcessor(BaseProcessor):
@@ -127,6 +172,7 @@ class ANCProcessor(BaseProcessor):
         """
         data =  no_of_steps = None
         file_path =  os.path.join(json_files.strip(), json_file_name.strip())
+        pre_process_file(file_path)
         with open(file_path, 'r', encoding='unicode_escape') as data_file:
             data = replace_escape_chars_in_the_json_file(data_file.read())
             try:
