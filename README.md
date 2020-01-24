@@ -19,5 +19,10 @@ Customized Scripts for OpenSRP Projects
 ### Person Attribute Type Constants Dictionary
 -   Child Register Card Number ID: `20`
 
+ ### OpenMrs Concepts  
+>How to use files inside openmrs-concepts     
+- **openmrs_concepts_**{*date-created*}**.sql** this is fully tested openmrs_concepts dump which works in openmrs version `2.1.4`
+- **concept_migration_**{*date-created}***.sql** this script should only be used after import of a openmrs concept db dump from [openmrs forum]([https://talk.openmrs.org/](https://talk.openmrs.org/)) which causes conflicts with the entity models of **openmrs.war**
+
 ### Notes
 - There is a high probability that the encounter date may be different from the vaccination date in the case where the vaccination date has time values. This has the potential of breaking the update vaccine data sql script
