@@ -26,3 +26,10 @@ Customized Scripts for OpenSRP Projects
 
 ### Notes
 - There is a high probability that the encounter date may be different from the vaccination date in the case where the vaccination date has time values. This has the potential of breaking the update vaccine data sql script
+
+### Travis encryption script
+This script helps in encrypting a file using Travis CI. The `-f` flag specifies the file path and the `-t` flag specifies the github token to use when logging into Travis.
+
+The syntax is : `./travis-encrypt.sh -f <file-path> -t <github-token>`.
+
+The github token has to be valid and have all the required permissions listed [here](https://docs.travis-ci.com/user/github-oauth-scopes#travis-ci-for-open-source-projects).
