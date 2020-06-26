@@ -17,4 +17,10 @@ begin
 end;
 $$;
 
+-- How to execute the SP :-
 -- SELECT invalid_data_count() as count;
+
+-- How to clean the data :-
+-- UPDATE organisationunit
+-- set uid = replace(uid,'/','7')
+-- where uid like '%/%';
