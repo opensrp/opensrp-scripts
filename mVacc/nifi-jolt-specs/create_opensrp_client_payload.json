@@ -1,0 +1,39 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "datecreated": "dateCreated",
+      "motherbaseid": "baseEntityId",
+      "mzeir": "identifiers.M_ZEIR_ID",
+      "homefacility": "attributes.Home_Facility",
+      "homefacilityUUID": "add.address3",
+      "homeaddress": "add.address2",
+      "gname": {
+        "* *": {
+          "$(0,1)": "firstName",
+          "$(0,2)": "lastName"
+        }
+      }
+    }
+  },
+  {
+    "operation": "default",
+    "spec": {
+      "type": "Client",
+      "gender": "Female"
+    }
+  },
+  {
+    "operation": "shift",
+    "spec": {
+      "*": { "@": "&" },
+      "add": "addresses[].addressFields"
+    }
+  },
+  {
+    "operation": "shift",
+    "spec": {
+      "@": "clients[]"
+    }
+  }
+]
